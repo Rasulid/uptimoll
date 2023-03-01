@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Depends, Body
 from sqlalchemy.orm import Session
-
 import models
 from Database import engine, SessionLocal
+import auth
+from auth import get_current_user, get_user_exceptions
+from schemas import InfoOut
 
 
 def get_db():
@@ -15,18 +17,32 @@ def get_db():
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
+app.include_router(auth.router)
 
 
 @app.get("/")
-async def get_msg(db: Session = Depends(get_db)):
-    return db.query(models.UserInfo).all()
+async def get_msg(db: Session = Depends(get_db),
+                  user: dict = Depends(get_current_user)):
+    result = []
+    if user is None:
+        raise get_user_exceptions()
+    query = db.query(models.UserInfo).all()
+    for info in query:
+        result.append(InfoOut(name=info.name,
+                              course=info.course,
+                              phone_number=info.phone_number))
+    return result
 
 
 @app.post("/")
 async def post_req(name: str = Body(...),
                    course: str = Body(...),
                    phone_number: str = Body(...),
-                   db: Session = Depends(get_db)):
+                   db: Session = Depends(get_db),
+                   user: dict = Depends(get_current_user)):
+    if user is None:
+        raise get_user_exceptions()
+
     model = models.UserInfo()
 
     model.name = name
@@ -39,14 +55,4 @@ async def post_req(name: str = Body(...),
     return "Success"
 
 
-# @app.post("/check", tags=["admin"])
-# async def check_admin(username: str,
-#                       password: str,
-#                       db: Session = Depends(get_db)):
-#     if username and password:
-#         model = db.query(models.Admin).all()
-#         for x in model:
-#             if username == x.username and password == x.password:
-#                 return True
-#
-#     return False
+
