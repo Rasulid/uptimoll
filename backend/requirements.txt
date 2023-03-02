@@ -26,3 +26,6 @@ typing_extensions==4.1.1
 uvicorn==0.13.4
 
 alembic~=1.7.6
+pip~=23.0.1
+Mako~=1.2.4
+setuptools~=65.5.0

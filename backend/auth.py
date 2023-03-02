@@ -8,7 +8,6 @@ from Database import engine, SessionLocal
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime
 from jose import jwt, JWTError
-from pydantic import BaseModel
 
 SECRET_KEY = "f9b41574aaeecc730adb46fc77650cabaeb1dd43ef177d7b5092df98ea701914"
 ALGORITHM = "HS256"
@@ -22,13 +21,6 @@ router = APIRouter(
     tags=["Auth"],
     responses={404: {"description": "Authenticate Error"}},
 )
-
-
-class UsersResponsesOut(BaseModel):
-    id: int
-    username: str
-    email: str
-
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -102,15 +94,9 @@ async def get_current_user(token: str = Depends(oauth2_bearer)):
     return {"sub": username, "user_id": user_id}
 
 
-@router.get("/", response_model=UsersResponsesOut)
-async def users_list(
-        db: Session = Depends(get_db), user: dict = Depends(get_current_user)
-):
-    return db.query(models.User).all()
-
-
 @router.post("/create_admin")
-async def create_admin(user: CreateUser, db: Session = Depends(get_db)):
+async def create_admin(user: CreateUser,
+                       db: Session = Depends(get_db)):
     user_model = models.User()
     user_model.username = user.username
     user_model.email = user.email
@@ -131,7 +117,8 @@ async def create_admin(user: CreateUser, db: Session = Depends(get_db)):
 
 @router.post("/token")
 async def login_for_access_token(
-        form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+        form_data: OAuth2PasswordRequestForm = Depends(),
+        db: Session = Depends(get_db)
 ):
     user = authenticate_user(form_data.username, form_data.password, db=db)
 
