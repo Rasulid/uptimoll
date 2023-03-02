@@ -94,9 +94,22 @@ async def get_current_user(token: str = Depends(oauth2_bearer)):
     return {"sub": username, "user_id": user_id}
 
 
+@router.get("/admins")
+async def admin_list(db: Session = Depends(get_db),
+                     auth_user: dict = Depends(get_current_user)):
+    if auth_user is None:
+        raise get_user_exceptions()
+
+    return db.query(models.User).all()
+
+
 @router.post("/create_admin")
 async def create_admin(user: CreateUser,
-                       db: Session = Depends(get_db)):
+                       db: Session = Depends(get_db),
+                       auth_user: dict = Depends(get_current_user)):
+    if auth_user is None:
+        raise get_user_exceptions()
+
     user_model = models.User()
     user_model.username = user.username
     user_model.email = user.email
