@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Body, HTTPException, status
 from sqlalchemy.orm import Session
 import models
 from Database import engine, SessionLocal
@@ -19,11 +19,9 @@ router = APIRouter()
 models.Base.metadata.create_all(bind=engine)
 
 
-
 @router.get("/")
-async def get_msg(db: Session = Depends(get_db),
+async def info_list(db: Session = Depends(get_db),
                   user: dict = Depends(get_current_user)):
-
     if user is None:
         raise get_user_exceptions()
     query = db.query(models.UserInfo).all()
@@ -32,11 +30,12 @@ async def get_msg(db: Session = Depends(get_db),
 
 
 @router.post("/")
-async def post_req(name: str = Body(...),
-                   course: str = Body(...),
-                   phone_number: str = Body(...),
-                   db: Session = Depends(get_db),
-                   user: dict = Depends(get_current_user)):
+async def post_client_info(name: str = Body(...),
+                           course: str = Body(...),
+                           phone_number: str = Body(...),
+                           db: Session = Depends(get_db),
+                           user: dict = Depends(get_current_user)):
+    result = []
     if user is None:
         raise get_user_exceptions()
 
@@ -45,14 +44,16 @@ async def post_req(name: str = Body(...),
     model.name = name
     model.course = course
     model.phone_number = phone_number
+    result.append(model)
 
     db.add(model)
     db.commit()
 
-    return "Success"
+    return InfoOut(id=result[0].id, name=result[0].name, course=result[0].course,
+                   phone_number=result[0].phone_number)
 
 
-@router.delete("/info")
+@router.delete("/info/{info_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_clients_info(info_id: int,
                               db: Session = Depends(get_db),
                               user: dict = Depends(get_current_user)):
@@ -60,10 +61,16 @@ async def delete_clients_info(info_id: int,
         raise get_user_exceptions()
 
     info_model = db.query(models.UserInfo) \
-        .filter(models.UserInfo.id == info_id) \
-        .delete()
+        .filter(models.UserInfo.id == info_id).first()
+
+    if not info_model:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    info_model = db.query(models.UserInfo) \
+        .filter(models.UserInfo.id == info_id).delete()
 
     db.commit()
 
-    return info_model
+    return "s"
+
 

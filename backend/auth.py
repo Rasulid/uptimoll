@@ -94,38 +94,38 @@ async def get_current_user(token: str = Depends(oauth2_bearer)):
     return {"sub": username, "user_id": user_id}
 
 
-@router.get("/admins")
-async def admin_list(db: Session = Depends(get_db),
-                     auth_user: dict = Depends(get_current_user)):
-    if auth_user is None:
-        raise get_user_exceptions()
-
-    return db.query(models.User).all()
-
-
-@router.post("/create_admin")
-async def create_admin(user: CreateUser,
-                       db: Session = Depends(get_db),
-                       auth_user: dict = Depends(get_current_user)):
-    if auth_user is None:
-        raise get_user_exceptions()
-
-    user_model = models.User()
-    user_model.username = user.username
-    user_model.email = user.email
-
-    hash_password = password_hash(user.password)
-
-    user_model.password = hash_password
-
-    get_refresh_token = create_refresh_token(user_model.username, user_model.id)
-    get_access_token = create_access_token(user_model.username, user_model.id)
-
-    db.add(user_model)
-    db.commit()
-    return {"access_token": get_access_token,
-            "refresh_token": get_refresh_token,
-            "type": "bearer"}
+# @router.post("/create_admin")
+# async def create_admin(user: CreateUser,
+#                        db: Session = Depends(get_db),
+#                        login: dict = Depends(get_current_user)):
+#     res = []
+#     user_model = models.User()
+#     user_model.username = user.username
+#     user_model.email = user.email
+#
+#     if user_model:
+#         user_name = db.query(models.User).all()
+#         for x in user_name:
+#             if user_model.username == x.username or user_model.email == x.email:
+#                 raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+#                                     detail={'msg': f"{user_model.username} user is already exists"})
+#     print(user_model.username)
+#     hash_password = password_hash(user.password)
+#
+#     user_model.password = hash_password
+#     return_user_model = user_model
+#
+#     get_refresh_token = create_refresh_token(user_model.username, user_model.id)
+#     get_access_token = create_access_token(user_model.username, user_model.id)
+#
+#     db.add(user_model)
+#     db.commit()
+#     res.append(return_user_model)
+#     return CreateUser(
+#         username=res[0].username,
+#         email=res[0].email,
+#         password=res[0].password
+#     )
 
 
 @router.post("/token")
@@ -139,8 +139,10 @@ async def login_for_access_token(
         raise token_exception()
     token_expires = timedelta(minutes=20)
     token = create_access_token(user.username, user.id, express_delta=token_expires)
+    get_refresh_token = create_refresh_token(user.username, user.id)
 
-    return {"access_token": token}
+    return {"access_token": token,
+            "refresh_token": get_refresh_token}
 
 
 # Exceptions
