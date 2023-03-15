@@ -133,16 +133,43 @@ async def login_for_access_token(
         form_data: OAuth2PasswordRequestForm = Depends(),
         db: Session = Depends(get_db)
 ):
-    user = authenticate_user(form_data.username, form_data.password, db=db)
+    try:
+        user = authenticate_user(form_data.username, form_data.password, db=db)
 
-    if not user:
-        raise token_exception()
+        if not user:
+            raise token_exception()
+    except jwt.JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
     token_expires = timedelta(minutes=20)
     token = create_access_token(user.username, user.id, express_delta=token_expires)
     get_refresh_token = create_refresh_token(user.username, user.id)
 
     return {"access_token": token,
             "refresh_token": get_refresh_token}
+
+
+@router.post("/refresh_token")
+async def refresh_token(refresh_token: str):
+    try:
+        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
+    except jwt.JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    new_access_token = jwt.encode({"sub": user_id}, SECRET_KEY, algorithm=ALGORITHM)
+
+    return {"access_token": new_access_token}
+
+
+@router.get("/users")
+async def user_list(db: Session = Depends(get_db),
+                    user: dict = Depends(get_current_user)):
+    if user is None:
+        raise get_user_exceptions()
+
+    model_ = db.query(models.User).all()
+    return model_
 
 
 # Exceptions

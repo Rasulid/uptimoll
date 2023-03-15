@@ -21,7 +21,8 @@ models.Base.metadata.create_all(bind=engine)
 
 @router.get("/")
 async def info_list(db: Session = Depends(get_db),
-                  user: dict = Depends(get_current_user)):
+                    user: dict = Depends(get_current_user)
+                    ):
     if user is None:
         raise get_user_exceptions()
     query = db.query(models.UserInfo).all()
@@ -34,7 +35,8 @@ async def post_client_info(name: str = Body(...),
                            course: str = Body(...),
                            phone_number: str = Body(...),
                            db: Session = Depends(get_db),
-                           user: dict = Depends(get_current_user)):
+                           user: dict = Depends(get_current_user)
+                           ):
     result = []
     if user is None:
         raise get_user_exceptions()
@@ -49,7 +51,7 @@ async def post_client_info(name: str = Body(...),
     db.add(model)
     db.commit()
 
-    return InfoOut(id=result[0].id, name=result[0].name, course=result[0].course,
+    return InfoOut(name=result[0].name, course=result[0].course,
                    phone_number=result[0].phone_number)
 
 
@@ -57,6 +59,7 @@ async def post_client_info(name: str = Body(...),
 async def delete_clients_info(info_id: int,
                               db: Session = Depends(get_db),
                               user: dict = Depends(get_current_user)):
+
     if user is None:
         raise get_user_exceptions()
 
@@ -71,6 +74,5 @@ async def delete_clients_info(info_id: int,
 
     db.commit()
 
-    return "s"
-
+    return info_model
 

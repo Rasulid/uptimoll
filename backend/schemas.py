@@ -8,7 +8,6 @@ class CreateUser(BaseModel):
 
 
 class InfoOut(BaseModel):
-    id: int
     name: str
     course: str
     phone_number: str
