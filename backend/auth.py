@@ -36,13 +36,13 @@ def get_db():
 
 def password_hash(password):
     if password is None:
-        raise "password is None"
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="password is None")
     return bcrypt_context.hash(password)
 
 
 def verify_password(plain_password, hashed_password):
     if plain_password is None or hashed_password is None:
-        raise "failed verify password"
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="failed verify password")
     return bcrypt_context.verify(plain_password, hashed_password)
 
 
@@ -50,9 +50,9 @@ def authenticate_user(user: str, password: str, db):
     user = db.query(models.User).filter(models.User.username == user).first()
 
     if not user:
-        return "user is not"
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user is not valid")
     if not verify_password(password, user.password):
-        return "verify password is None"
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="password is not valid")
     return user
 
 

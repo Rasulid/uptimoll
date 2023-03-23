@@ -15,11 +15,13 @@ def get_db():
         db.close()
 
 
-router = APIRouter()
+router = APIRouter(prefix="/crud",
+                   tags=['crud'],
+                   responses={404: {'description': "Not Found"}},)
 models.Base.metadata.create_all(bind=engine)
 
 
-@router.get("/")
+@router.get("/list/")
 async def info_list(db: Session = Depends(get_db),
                     user: dict = Depends(get_current_user)
                     ):
@@ -30,7 +32,7 @@ async def info_list(db: Session = Depends(get_db),
     return query
 
 
-@router.post("/")
+@router.post("/create/")
 async def post_client_info(name: str = Body(...),
                            course: str = Body(...),
                            phone_number: str = Body(...),
@@ -46,6 +48,10 @@ async def post_client_info(name: str = Body(...),
     model.name = name
     model.course = course
     model.phone_number = phone_number
+    #
+    # if model.name or model.course or model.phone_number i:
+    #     raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Validation Error")
+
     result.append(model)
 
     db.add(model)
@@ -67,7 +73,7 @@ async def delete_clients_info(info_id: int,
         .filter(models.UserInfo.id == info_id).first()
 
     if not info_model:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No information")
 
     info_model = db.query(models.UserInfo) \
         .filter(models.UserInfo.id == info_id).delete()
