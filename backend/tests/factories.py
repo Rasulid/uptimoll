@@ -1,18 +1,18 @@
-# import sys
-# sys.path.append("...")
 from factory.alchemy import SQLAlchemyModelFactory
 from models import UserInfo
 from faker import Faker
 
 fake = Faker()
-model = UserInfo()
+# model = UserInfo()
 
 
 class UserInfoFactory(SQLAlchemyModelFactory):
     """This class give the fake user info"""
-    global model
-
-    model.name = fake.name()
+    class Meta:
+        model = UserInfo
 
     name = fake.name()
-    print(name)
+    course = fake.job()
+    phone_number = fake.phone_number()
+
+
