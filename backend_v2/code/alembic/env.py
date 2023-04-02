@@ -11,7 +11,9 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app.core.config import Settings
 
-sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
+# sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
+#
+# print(17, sys.path)
 
 from app.model.base_model import BaseModel
 
