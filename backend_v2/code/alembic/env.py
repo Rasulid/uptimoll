@@ -11,9 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app.core.config import Settings
 
-# sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
-#
-# print(17, sys.path)
+sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
 
 from app.model.base_model import BaseModel
 
@@ -66,7 +64,7 @@ async def run_migrations_online():
     In this scenario we need to create an Engine
     and associate a connection with the context.
     """
-    connectable = AsyncEngine(create_engine(settings.ASYNC_DATABASE_URI, echo=True, future=True))
+    connectable = AsyncEngine(create_engine(settings.ASYNC_TEST_DATABASE_URI, echo=True, future=True))
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

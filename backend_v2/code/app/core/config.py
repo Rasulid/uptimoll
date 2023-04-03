@@ -13,6 +13,10 @@ class Settings(BaseSettings):
     DATABASE_USER: str
     DATABASE_NAME: str
     DATABASE_HOST: str
+    DB_POOL_SIZE = 83
+    WEB_CONCURRENCY = 9
+    POOL_SIZE = max(DB_POOL_SIZE // WEB_CONCURRENCY, 5)
+
 
     # @validator("ASYNC_DATABASE_URI", pre=True)
     # def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
@@ -29,7 +33,7 @@ class Settings(BaseSettings):
     #     return "postgresql://postgres:123rasulQq@localhost/UpTemAll"
 
     TEST_DATABASE: str = "test_db"
-    ASYNC_TEST_DATABASE_URI: Optional[str] = "postgresql://postgres:123rasulQq@localhost/UpTemAll"
+    ASYNC_TEST_DATABASE_URI: Optional[str] = "postgresql+asyncpg://rasulabduvaitov:123rasulQq@localhost/uptemall"
 
     @validator("ASYNC_TEST_DATABASE_URI", pre=True)
     def assemble_test_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
@@ -56,9 +60,11 @@ class Settings(BaseSettings):
 
     class Config:
 
-        env_file = f"{pathlib.Path(__file__).parents[3]}\.env"
+        env_file = f"{pathlib.Path(__file__).parents[3]}/.env"
         env_file_encoding = "utf-8"
         check_fields = False
+        # print(env_file)
 
 
 settings = Settings()
+# print("DB name", settings.DATABASE_NAME)
