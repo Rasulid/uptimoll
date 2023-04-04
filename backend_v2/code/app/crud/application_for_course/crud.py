@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from app.db.database import async_session
 from code.app.model.models import AdminModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
@@ -10,6 +11,9 @@ router = APIRouter(tags=['application for course'],
 
 
 @router.get('/', response_model=None)
-async def get_all_app(db_session: Optional[AsyncSession] = None):
-    result = await db_session.execute(select(AdminModel))
+async def get_all_app():
+    db = async_session()
+    result = await db.execute(select(AdminModel))
     return result.scalars().all()
+
+
