@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from app.db.database import async_session
-from code.app.model.models import AdminModel
+from code.app.db.database import async_session
+from code.app.model.admin_model import AdminModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 from sqlalchemy import select
