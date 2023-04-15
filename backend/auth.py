@@ -1,5 +1,7 @@
+
 from fastapi import Depends, HTTPException, status, APIRouter
 import models
+from config import SECRET_AUTH, ALGORITHM
 from schemas import CreateUser
 from typing import Optional
 from passlib.context import CryptContext
@@ -9,8 +11,8 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime
 from jose import jwt, JWTError
 
-SECRET_KEY = "f9b41574aaeecc730adb46fc77650cabaeb1dd43ef177d7b5092df98ea701914"
-ALGORITHM = "HS256"
+SECRET_KEY = SECRET_AUTH
+ALGORITHM = ALGORITHM
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token/")
 
@@ -94,38 +96,38 @@ async def get_current_user(token: str = Depends(oauth2_bearer)):
     return {"sub": username, "user_id": user_id}
 
 
-# @router.post("/create_admin")
-# async def create_admin(user: CreateUser,
-#                        db: Session = Depends(get_db),
-#                        login: dict = Depends(get_current_user)):
-#     res = []
-#     user_model = models.User()
-#     user_model.username = user.username
-#     user_model.email = user.email
-#
-#     if user_model:
-#         user_name = db.query(models.User).all()
-#         for x in user_name:
-#             if user_model.username == x.username or user_model.email == x.email:
-#                 raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-#                                     detail={'msg': f"{user_model.username} user is already exists"})
-#     print(user_model.username)
-#     hash_password = password_hash(user.password)
-#
-#     user_model.password = hash_password
-#     return_user_model = user_model
-#
-#     get_refresh_token = create_refresh_token(user_model.username, user_model.id)
-#     get_access_token = create_access_token(user_model.username, user_model.id)
-#
-#     db.add(user_model)
-#     db.commit()
-#     res.append(return_user_model)
-#     return CreateUser(
-#         username=res[0].username,
-#         email=res[0].email,
-#         password=res[0].password
-#     )
+@router.post("/create_admin")
+async def create_admin(user: CreateUser,
+                       db: Session = Depends(get_db),
+                       login: dict = Depends(get_current_user)):
+    res = []
+    user_model = models.User()
+    user_model.username = user.username
+    user_model.email = user.email
+
+    if user_model:
+        user_name = db.query(models.User).all()
+        for x in user_name:
+            if user_model.username == x.username or user_model.email == x.email:
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                                    detail={'msg': f"{user_model.username} user is already exists"})
+    print(user_model.username)
+    hash_password = password_hash(user.password)
+
+    user_model.password = hash_password
+    return_user_model = user_model
+
+    get_refresh_token = create_refresh_token(user_model.username, user_model.id)
+    get_access_token = create_access_token(user_model.username, user_model.id)
+
+    db.add(user_model)
+    db.commit()
+    res.append(return_user_model)
+    return CreateUser(
+        username=res[0].username,
+        email=res[0].email,
+        password=res[0].password
+    )
 
 
 @router.post("/token")

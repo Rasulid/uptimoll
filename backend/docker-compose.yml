@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:15
+    container_name: up_db
+    command: -p 1221
+    expose:
+      - 1221
+    env_file:
+      - .env-no-dev
+
+  app:
+    build:
+      context: .
+    env_file:
+      - .env-no-dev
+    container_name: uptemoll_web
+    command: ["/backend/docker/app.sh"]
+    ports:
+      - 9994:8000
+    depends_on:
+      - db
