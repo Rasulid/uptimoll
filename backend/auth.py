@@ -1,4 +1,3 @@
-
 from fastapi import Depends, HTTPException, status, APIRouter
 import models
 from config import SECRET_AUTH, ALGORITHM

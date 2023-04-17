@@ -4,7 +4,7 @@ RUN mkdir /uptemall
 
 WORKDIR /backend
 
-COPY ../requirements.txt .
+COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
@@ -13,4 +13,4 @@ COPY . .
 RUN chmod a+x docker/*.sh
 
 
-#CMD gunicorn main:app --workers 3 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000
+#CMD gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000

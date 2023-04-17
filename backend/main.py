@@ -6,7 +6,9 @@ import models
 import crud
 import auth
 
-app = FastAPI(title="Uptemoll", version='0.1.0')
+app = FastAPI(title="Uptemoll",
+              version='0.1.0',
+              docs_url="/")
 models.Base.metadata.create_all(bind=engine)
 app.include_router(auth.router)
 app.include_router(crud.router)
@@ -19,5 +21,3 @@ app.add_middleware(
     allow_headers=["*"], # allow all headers
 )
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8090)
