@@ -98,7 +98,7 @@ async def get_current_user(token: str = Depends(oauth2_bearer)):
 @router.post("/create_admin")
 async def create_admin(user: CreateUser,
                        db: Session = Depends(get_db),
-                       login: dict = Depends(get_current_user)):
+                      ):
     res = []
     user_model = models.User()
     user_model.username = user.username
