@@ -3,7 +3,7 @@
 export PYTHONPATH=:$(PWD)/code/app
 
 run:
-	python3 main.py
+	uvicorn main:app --reload
 hello:
 	echo "hello world"
 
