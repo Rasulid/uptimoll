@@ -63,7 +63,7 @@ class Settings(BaseSettings):
         env_file = f"{pathlib.Path(__file__).parents[3]}/backend_v2/.env"
         env_file_encoding = "utf-8"
         check_fields = False
-        print(env_file)
+        # print(env_file)
 
 
 settings = Settings()

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, DATE, MetaData
+from sqlalchemy import Column, String, Integer, DATE, MetaData , DateTime
 from datetime import datetime
 from code.db.Base_model import BaseModel
 

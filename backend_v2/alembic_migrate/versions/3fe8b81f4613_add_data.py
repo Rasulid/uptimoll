@@ -1,8 +1,8 @@
-"""add course 
+"""add data
 
-Revision ID: 54a87a7d8aa5
+Revision ID: 3fe8b81f4613
 Revises: 
-Create Date: 2023-04-20 12:36:38.206684
+Create Date: 2023-04-20 17:50:02.297591
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '54a87a7d8aa5'
+revision = '3fe8b81f4613'
 down_revision = None
 branch_labels = None
 depends_on = None
