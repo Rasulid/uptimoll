@@ -9,9 +9,7 @@ sys.path.append(os.path.join(sys.path[0], 'src'))
 
 from api.core.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER
 from api.model.course_model import Base
-from api.model import (course_model, request_model,
-                       start_group_model,student_work_model,
-                       learn_format_model,for_who_model, admin_model)
+from api.model import (course_model, admin_model ,request_model)
 
 
 # this is the Alembic Config object, which provides
