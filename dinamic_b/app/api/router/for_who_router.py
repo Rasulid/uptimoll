@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse
 from api.db.session import get_db
 from api.auth.login import get_current_admin, get_user_exceptions
 from api.model.course_model import ForWhoModel
-from schema.for_who_schema import ForWhoCreateSchema
+from api.schema.for_who_schema import ForWhoCreateSchema
 
 router = APIRouter(tags=["For who"],
                    prefix="/api/for-who")
@@ -26,12 +26,14 @@ async def get_list(db: Session = Depends(get_db)):
 
 
 @router.post('/create')
-async def create(schema: ForWhoCreateSchema
-                 , db: Session = Depends(get_db)):
+async def create(schema: ForWhoCreateSchema,
+                 course_id: int,
+                db: Session = Depends(get_db)):
     model = ForWhoModel()
     model.title = schema.title
     model.sub_title = schema.sub_title
     model.description = schema.description
+    model.course_id = course_id
 
 
     db.add(model)

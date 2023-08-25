@@ -7,7 +7,6 @@ class LearningFormatCreateSchema(BaseModel):
     desc: str
     desc_2: str
     price: int
-    course_id: int
 
 
 class LearningFormatReadSchema(BaseModel):

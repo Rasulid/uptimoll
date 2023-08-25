@@ -7,16 +7,16 @@ from starlette.responses import JSONResponse
 
 from api.db.session import get_db
 from api.auth.login import get_current_admin, get_user_exceptions
-from api.schema.start_group_schema import StartGroupCreateSchema, StartGrupReadSchema
-from api.model.course_model import StartGroupModel
+from api.schema.learning_format_schema import LearningFormatCreateSchema, LearningFormatReadSchema
+from api.model.course_model import LearningFormatModel
 
-router = APIRouter(tags=["group start"],
-                   prefix="/api/group-start")
+router = APIRouter(tags=["learnong format"],
+                   prefix="/api/learning-format")
 
 
-@router.get("/get-list", response_model=List[StartGrupReadSchema])
+@router.get("/get-list", response_model=List[LearningFormatReadSchema])
 async def get_list_groups(db: Session = Depends(get_db)):
-    query = db.query(StartGroupModel).all()
+    query = db.query(LearningFormatModel).all()
     if query is None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -26,18 +26,15 @@ async def get_list_groups(db: Session = Depends(get_db)):
 
 
 @router.post("/create")
-async def create(schema: StartGroupCreateSchema,
-                 course_id: int,
+async def create(schema: LearningFormatCreateSchema, course_id: int,
                  db: Session = Depends(get_db)):
     # course_query
 
-    model = StartGroupModel()
-    model.when_start = schema.when_start
-    model.weeks = schema.weeks
-    model.group_lang = schema.group_lang
-    model.time_start = schema.time_start
-    model.time_end = schema.time_end
-    model.weeks = schema.weeks
+    model = LearningFormatModel()
+    model.group = schema.group
+    model.desc = schema.desc
+    model.desc_2 = schema.desc_2
+    model.price = schema.price
     model.course_id = course_id
 
     db.add(model)

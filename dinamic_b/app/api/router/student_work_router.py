@@ -7,16 +7,16 @@ from starlette.responses import JSONResponse
 
 from api.db.session import get_db
 from api.auth.login import get_current_admin, get_user_exceptions
-from api.schema.start_group_schema import StartGroupCreateSchema, StartGrupReadSchema
-from api.model.course_model import StartGroupModel
+from api.schema.student_work_schema import StudentWorkCreateSchema, StudentWorkReadSchema
+from api.model.course_model import StudentWorkModel
 
-router = APIRouter(tags=["group start"],
-                   prefix="/api/group-start")
+router = APIRouter(tags=["student work"],
+                   prefix="/api/student-work")
 
 
-@router.get("/get-list", response_model=List[StartGrupReadSchema])
+@router.get("/get-list", response_model=List[StudentWorkReadSchema])
 async def get_list_groups(db: Session = Depends(get_db)):
-    query = db.query(StartGroupModel).all()
+    query = db.query(StudentWorkModel).all()
     if query is None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -26,18 +26,14 @@ async def get_list_groups(db: Session = Depends(get_db)):
 
 
 @router.post("/create")
-async def create(schema: StartGroupCreateSchema,
-                 course_id: int,
+async def create(schema: StudentWorkCreateSchema, course_id: int,
                  db: Session = Depends(get_db)):
     # course_query
 
-    model = StartGroupModel()
-    model.when_start = schema.when_start
-    model.weeks = schema.weeks
-    model.group_lang = schema.group_lang
-    model.time_start = schema.time_start
-    model.time_end = schema.time_end
-    model.weeks = schema.weeks
+    model = StudentWorkModel()
+    model.link = schema.link
+    model.image_name = schema.image_name
+    model.visible = schema.visible
     model.course_id = course_id
 
     db.add(model)

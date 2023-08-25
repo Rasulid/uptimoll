@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse
 from api.db.session import get_db
 from api.auth.login import get_current_admin, get_user_exceptions
 from api.model.course_model import CourseModel
-from schema.course_schema import CourseCreateSchema
+from api.schema.course_schema import CourseCreateSchema
 
 router = APIRouter(tags=["Course"],
                    prefix="/api/course")
