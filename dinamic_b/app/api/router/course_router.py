@@ -1,6 +1,8 @@
+import shutil
+import uuid
 from typing import List
 
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, File
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
@@ -8,10 +10,18 @@ from starlette.responses import JSONResponse
 from api.db.session import get_db
 from api.auth.login import get_current_admin, get_user_exceptions
 from api.model.course_model import CourseModel
-from api.schema.course_schema import CourseCreateSchema
+from api.schema.course_schema import CourseCreateSchema, CourseReadSchema
 
 router = APIRouter(tags=["Course"],
                    prefix="/api/course")
+
+
+@router.post("/test")
+async def upload_img(img: UploadFile = File(...)):
+    img.filename = f"{uuid.uuid4()}.jpg"
+    with open(f"static/image/{img.filename}", "wb") as buffer:
+        shutil.copyfileobj(img.file, buffer)
+    return img.filename
 
 
 @router.get('/get-list')
@@ -25,21 +35,36 @@ async def get_list(db: Session = Depends(get_db)):
     return query
 
 
-@router.post('/create')
-async def create(schema: CourseCreateSchema
-                 , db: Session = Depends(get_db)):
+@router.post('/create', response_model=CourseReadSchema)
+async def create(course_schema: CourseCreateSchema,
+                 db: Session = Depends(get_db)
+                 ):
     model = CourseModel()
-    model.title = schema.title
-    model.description = schema.description
-    model.type = schema.type
-    model.image_name = schema.image_name
-    model.practice = schema.practice
-    model.home_work = schema.home_work
-    model.project_portfolio = schema.project_portfolio
-    model.for_who_photo = schema.for_who_photo
-    model.visible = schema.visible
+    model.title = course_schema.title
+    model.description = course_schema.description
+    model.type = course_schema.type
+    model.image_name = "string"
+    model.practice = course_schema.practice
+    model.home_work = course_schema.home_work
+    model.project_portfolio = course_schema.project_portfolio
+    model.visible = course_schema.visible
 
     db.add(model)
     db.commit()
 
     return model
+
+
+@router.post("/add-photo/{course_id}")
+async def add_photo(course_id: int,
+                    file: UploadFile = File(...),
+                    db: Session = Depends(get_db)):
+    model = db.query(CourseModel).filter(CourseModel.id == course_id).first()
+    image = await upload_img(file)
+
+    model.image_name = image
+
+    db.add(model)
+    db.commit()
+
+    return "Success"

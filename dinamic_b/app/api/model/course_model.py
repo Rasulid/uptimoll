@@ -13,7 +13,6 @@ class CourseModel(Base):
     practice = Column(Integer)
     home_work = Column(Integer)
     project_portfolio = Column(Integer)
-    for_who_photo = Column(String)
     visible = Column(Boolean)
 
     # for_who_rel = relationship("ForWhoModel", back_populates="course", foreign_keys=[for_who])
