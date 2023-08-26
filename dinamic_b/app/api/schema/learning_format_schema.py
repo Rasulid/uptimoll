@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel
 
 
@@ -16,6 +15,16 @@ class LearningFormatReadSchema(BaseModel):
     desc_2: str
     price: int
     course_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class LearningFormatSiteSchema(BaseModel):
+    group: str
+    desc: str
+    desc_2: str
+    price: int
 
     class Config:
         orm_mode = True

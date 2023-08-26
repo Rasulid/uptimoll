@@ -17,3 +17,12 @@ class StudentWorkReadSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class StudentWorkSiteSchema(BaseModel):
+    link: str
+    image_name: str
+    visible: bool
+
+    class Config:
+        orm_mode = True

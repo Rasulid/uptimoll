@@ -15,11 +15,10 @@ class CourseModel(Base):
     project_portfolio = Column(Integer)
     visible = Column(Boolean)
 
-    # for_who_rel = relationship("ForWhoModel", back_populates="course", foreign_keys=[for_who])
-    # start_group_rel = relationship("StartGroupModel", back_populates="course", foreign_keys=[start_group])
-    # learn_format_rel = relationship("LearningFormatModel", back_populates="course", foreign_keys=[learn_format])
-    # student_work_rel = relationship("StudentWorkModel", back_populates="course", foreign_keys=[student_work])
-
+    for_who_rel = relationship("ForWhoModel", back_populates="course")
+    start_group_rel = relationship("StartGroupModel", back_populates="course")
+    learn_format_rel = relationship("LearningFormatModel", back_populates="course")
+    student_work_rel = relationship("StudentWorkModel", back_populates="course")
 
 
 class ForWhoModel(Base):
@@ -30,6 +29,8 @@ class ForWhoModel(Base):
     sub_title = Column(String)
     description = Column(String)
     course_id = Column(Integer, ForeignKey('course.id', ondelete="CASCADE"))
+
+    course = relationship("CourseModel", back_populates="for_who_rel")
 
 
 class StartGroupModel(Base):
@@ -43,6 +44,8 @@ class StartGroupModel(Base):
     weeks = Column(String)
     course_id = Column(Integer, ForeignKey("course.id", ondelete="CASCADE"))
 
+    course = relationship("CourseModel", back_populates="start_group_rel")
+
 
 class LearningFormatModel(Base):
     # many-to-one relationship
@@ -54,6 +57,8 @@ class LearningFormatModel(Base):
     price = Column(Integer)
     course_id = Column(Integer, ForeignKey("course.id", ondelete="CASCADE"))
 
+    course = relationship("CourseModel", back_populates="learn_format_rel")
+
 
 class StudentWorkModel(Base):
     # many-to-one relationship
@@ -63,3 +68,6 @@ class StudentWorkModel(Base):
     image_name = Column(String)
     visible = Column(Boolean)
     course_id = Column(Integer, ForeignKey('course.id', ondelete="CASCADE"))
+
+    course = relationship("CourseModel", back_populates="student_work_rel")
+

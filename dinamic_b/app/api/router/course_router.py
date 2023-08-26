@@ -4,19 +4,19 @@ from typing import List
 
 from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, File
 from fastapi.responses import Response
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from starlette.responses import JSONResponse
 
 from api.db.session import get_db
 from api.auth.login import get_current_admin, get_user_exceptions
-from api.model.course_model import CourseModel
+from api.model.course_model import (CourseModel, StudentWorkModel,
+                                    LearningFormatModel,ForWhoModel,StartGroupModel)
 from api.schema.course_schema import CourseCreateSchema, CourseReadSchema
 
 router = APIRouter(tags=["Course"],
                    prefix="/api/course")
 
 
-@router.post("/test")
 async def upload_img(img: UploadFile = File(...)):
     img.filename = f"{uuid.uuid4()}.jpg"
     with open(f"static/image/{img.filename}", "wb") as buffer:
@@ -68,3 +68,26 @@ async def add_photo(course_id: int,
     db.commit()
 
     return "Success"
+
+
+@router.get('/get-course/{course_id}')
+async def get_course(course_id: int, db: Session = Depends(get_db)):
+    course = (
+        db.query(CourseModel)
+        .filter(CourseModel.id == course_id)
+        .options(
+            joinedload(CourseModel.for_who_rel),
+            joinedload(CourseModel.start_group_rel),
+            joinedload(CourseModel.learn_format_rel),
+            joinedload(CourseModel.student_work_rel)
+        )
+        .first()
+    )
+
+    if course is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course not found"
+        )
+
+    return course

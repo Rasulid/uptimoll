@@ -7,14 +7,14 @@ from starlette.responses import JSONResponse
 
 from api.db.session import get_db
 from api.auth.login import get_current_admin, get_user_exceptions
-from api.schema.start_group_schema import StartGroupCreateSchema, StartGrupReadSchema
+from api.schema.start_group_schema import StartGroupCreateSchema, StartGroupReadSchema
 from api.model.course_model import StartGroupModel
 
 router = APIRouter(tags=["group start"],
                    prefix="/api/group-start")
 
 
-@router.get("/get-list", response_model=List[StartGrupReadSchema])
+@router.get("/get-list", response_model=List[StartGroupReadSchema])
 async def get_list_groups(db: Session = Depends(get_db)):
     query = db.query(StartGroupModel).all()
     if query is None:
