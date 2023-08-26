@@ -24,7 +24,7 @@ async def upload_img(img: UploadFile = File(...)):
     return img.filename
 
 
-@router.get('/get-list')
+@router.get('/get-list', response_model=List[CourseReadSchema])
 async def get_list(db: Session = Depends(get_db)):
     query = db.query(CourseModel).all()
     if query is None:
@@ -34,6 +34,28 @@ async def get_list(db: Session = Depends(get_db)):
         )
     return query
 
+
+@router.get('/get-course/{course_id}', response_model=CourseReadSchema)
+async def get_course(course_id: int, db: Session = Depends(get_db)):
+    course = (
+        db.query(CourseModel)
+        .filter(CourseModel.id == course_id)
+        .options(
+            joinedload(CourseModel.for_who_rel),
+            joinedload(CourseModel.start_group_rel),
+            joinedload(CourseModel.learn_format_rel),
+            joinedload(CourseModel.student_work_rel)
+        )
+        .first()
+    )
+
+    if course is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course not found"
+        )
+
+    return course
 
 @router.post('/create', response_model=CourseReadSchema)
 async def create(course_schema: CourseCreateSchema,
@@ -60,8 +82,10 @@ async def add_photo(course_id: int,
                     file: UploadFile = File(...),
                     db: Session = Depends(get_db)):
     model = db.query(CourseModel).filter(CourseModel.id == course_id).first()
+    if model is None:
+        raise HTTPException(status_code=404,
+                            detail="Course not found")
     image = await upload_img(file)
-
     model.image_name = image
 
     db.add(model)
@@ -70,24 +94,73 @@ async def add_photo(course_id: int,
     return "Success"
 
 
-@router.get('/get-course/{course_id}')
-async def get_course(course_id: int, db: Session = Depends(get_db)):
-    course = (
-        db.query(CourseModel)
-        .filter(CourseModel.id == course_id)
-        .options(
-            joinedload(CourseModel.for_who_rel),
-            joinedload(CourseModel.start_group_rel),
-            joinedload(CourseModel.learn_format_rel),
-            joinedload(CourseModel.student_work_rel)
-        )
-        .first()
-    )
-
-    if course is None:
+@router.put("/change-course/{course_id}", response_model=CourseReadSchema)
+async def change_course(course_id: int,
+                        schema: CourseCreateSchema,
+                        db: Session = Depends(get_db)):
+    query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
+    if query is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Course not found"
         )
+    query.title = schema.title
+    query.description = schema.description
+    query.type = schema.type
+    query.image_name = "string"
+    query.practice = schema.practice
+    query.home_work = schema.home_work
+    query.project_portfolio = schema.project_portfolio
+    query.visible = schema.visible
 
-    return course
+    db.add(query)
+    db.commit()
+    return query
+
+@router.put("/change-photo/{course_id}")
+async def change_photo(course_id: int,
+                       file: UploadFile = File(...),
+                       db: Session = Depends(get_db)):
+    model = db.query(CourseModel).filter(CourseModel.id == course_id).first()
+    if model is None:
+        raise HTTPException(status_code=404,
+                            detail="Course not found")
+    image = await upload_img(file)
+    model.image_name = image
+
+    db.add(model)
+    db.commit()
+
+    return "Success"
+
+
+@router.delete("/delete-course/{course_id}")
+async def del_course(course_id: int,
+                     db: Session = Depends(get_db)):
+    query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
+
+    if query is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course not found"
+        )
+    db.delete(query)
+    db.commit()
+    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
+                        content="Successful")
+
+@router.delete("/del_img/{course_id}")
+async def del_img(course_id: int,
+                  db: Session = Depends(get_db)):
+    query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
+    if query is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course not found"
+        )
+    query.image_name = "string"
+
+    db.add(query)
+    db.commit()
+    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
+                        content="Success")

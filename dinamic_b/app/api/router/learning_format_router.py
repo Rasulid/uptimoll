@@ -8,9 +8,9 @@ from starlette.responses import JSONResponse
 from api.db.session import get_db
 from api.auth.login import get_current_admin, get_user_exceptions
 from api.schema.learning_format_schema import LearningFormatCreateSchema, LearningFormatReadSchema
-from api.model.course_model import LearningFormatModel
+from api.model.course_model import LearningFormatModel, CourseModel
 
-router = APIRouter(tags=["learnong format"],
+router = APIRouter(tags=["learning format"],
                    prefix="/api/learning-format")
 
 
@@ -19,17 +19,33 @@ async def get_list_groups(db: Session = Depends(get_db)):
     query = db.query(LearningFormatModel).all()
     if query is None:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Something is wrong Selecting DataBase"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course not found"
         )
     return query
 
 
-@router.post("/create")
-async def create(schema: LearningFormatCreateSchema, course_id: int,
+@router.get("/get-by-id/{format_id}", response_model=List[LearningFormatReadSchema])
+async def get_list_groups(format_id: int,
+                          db: Session = Depends(get_db)):
+    query = db.query(LearningFormatModel).filter(LearningFormatModel.id == format_id)
+    if query is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course not found"
+        )
+    return query
+
+
+@router.post("/create", response_model=LearningFormatReadSchema)
+async def create(schema: LearningFormatCreateSchema,
+                 course_id: int,
                  db: Session = Depends(get_db)):
     # course_query
-
+    query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
+    if query is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Course not found")
     model = LearningFormatModel()
     model.group = schema.group
     model.desc = schema.desc
@@ -41,3 +57,39 @@ async def create(schema: LearningFormatCreateSchema, course_id: int,
     db.commit()
 
     return model
+
+
+@router.put("/change-course/{format_id}", response_model=LearningFormatReadSchema)
+async def change_format(format_id: int,
+                        schema: LearningFormatCreateSchema,
+                        db: Session = Depends(get_db)):
+    query = db.query(LearningFormatModel).filter(LearningFormatModel.id == format_id).first()
+    if query is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Format not found"
+        )
+    query.group = schema.group
+    query.desc = schema.desc
+    query.desc_2 = schema.desc_2
+    query.price = schema.price
+
+    db.add(query)
+    db.commit()
+    return query
+
+
+@router.delete("/delete-format/{format_id}")
+async def del_format(format_id: int,
+                     db: Session = Depends(get_db)):
+    query = db.query(LearningFormatModel).filter(LearningFormatModel.id == format_id).first()
+
+    if query is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course not found"
+        )
+    db.delete(query)
+    db.commit()
+    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
+                        content="Successful")
