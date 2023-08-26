@@ -15,7 +15,7 @@ router = APIRouter(tags=["student work"],
 
 
 @router.get("/get-list", response_model=List[StudentWorkReadSchema])
-async def get_list_groups(db: Session = Depends(get_db)):
+async def get_student_work(db: Session = Depends(get_db)):
     query = db.query(StudentWorkModel).all()
     if query is None:
         raise HTTPException(

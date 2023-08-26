@@ -37,7 +37,7 @@ async def get_list_groups(group_id: int,
     return query
 
 
-@router.post("/create")
+@router.post("/create", response_model=StartGroupReadSchema)
 async def create(schema: StartGroupCreateSchema,
                  course_id: int,
                  db: Session = Depends(get_db)):

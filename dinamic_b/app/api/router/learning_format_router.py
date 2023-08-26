@@ -15,7 +15,7 @@ router = APIRouter(tags=["learning format"],
 
 
 @router.get("/get-list", response_model=List[LearningFormatReadSchema])
-async def get_list_groups(db: Session = Depends(get_db)):
+async def get_list_formats(db: Session = Depends(get_db)):
     query = db.query(LearningFormatModel).all()
     if query is None:
         raise HTTPException(
@@ -25,10 +25,10 @@ async def get_list_groups(db: Session = Depends(get_db)):
     return query
 
 
-@router.get("/get-by-id/{format_id}", response_model=List[LearningFormatReadSchema])
-async def get_list_groups(format_id: int,
-                          db: Session = Depends(get_db)):
-    query = db.query(LearningFormatModel).filter(LearningFormatModel.id == format_id)
+@router.get("/get-by-id/{format_id}", response_model=LearningFormatReadSchema)
+async def get_formats(format_id: int,
+                      db: Session = Depends(get_db)):
+    query = db.query(LearningFormatModel).filter(LearningFormatModel.id == format_id).first()
     if query is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -59,7 +59,7 @@ async def create(schema: LearningFormatCreateSchema,
     return model
 
 
-@router.put("/change-course/{format_id}", response_model=LearningFormatReadSchema)
+@router.put("/change-format/{format_id}", response_model=LearningFormatReadSchema)
 async def change_format(format_id: int,
                         schema: LearningFormatCreateSchema,
                         db: Session = Depends(get_db)):
