@@ -15,7 +15,8 @@ router = APIRouter(tags=["learning format"],
 
 
 @router.get("/get-list", response_model=List[LearningFormatReadSchema])
-async def get_list_formats(db: Session = Depends(get_db)):
+async def get_list_formats(db: Session = Depends(get_db),
+                           login: dict = Depends(get_current_admin)):
     query = db.query(LearningFormatModel).all()
     if query is None:
         raise HTTPException(
@@ -27,7 +28,8 @@ async def get_list_formats(db: Session = Depends(get_db)):
 
 @router.get("/get-by-id/{format_id}", response_model=LearningFormatReadSchema)
 async def get_formats(format_id: int,
-                      db: Session = Depends(get_db)):
+                      db: Session = Depends(get_db),
+                      login: dict = Depends(get_current_admin)):
     query = db.query(LearningFormatModel).filter(LearningFormatModel.id == format_id).first()
     if query is None:
         raise HTTPException(
@@ -40,7 +42,8 @@ async def get_formats(format_id: int,
 @router.post("/create", response_model=LearningFormatReadSchema)
 async def create(schema: LearningFormatCreateSchema,
                  course_id: int,
-                 db: Session = Depends(get_db)):
+                 db: Session = Depends(get_db),
+                 login: dict = Depends(get_current_admin)):
     # course_query
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
@@ -62,7 +65,8 @@ async def create(schema: LearningFormatCreateSchema,
 @router.put("/change-format/{format_id}", response_model=LearningFormatReadSchema)
 async def change_format(format_id: int,
                         schema: LearningFormatCreateSchema,
-                        db: Session = Depends(get_db)):
+                        db: Session = Depends(get_db),
+                        login: dict = Depends(get_current_admin)):
     query = db.query(LearningFormatModel).filter(LearningFormatModel.id == format_id).first()
     if query is None:
         raise HTTPException(
@@ -81,7 +85,8 @@ async def change_format(format_id: int,
 
 @router.delete("/delete-format/{format_id}")
 async def del_format(format_id: int,
-                     db: Session = Depends(get_db)):
+                     db: Session = Depends(get_db),
+                     login: dict = Depends(get_current_admin)):
     query = db.query(LearningFormatModel).filter(LearningFormatModel.id == format_id).first()
 
     if query is None:

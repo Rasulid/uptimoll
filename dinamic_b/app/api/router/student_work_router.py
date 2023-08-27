@@ -15,7 +15,8 @@ router = APIRouter(tags=["student work"],
 
 
 @router.get("/get-list", response_model=List[StudentWorkReadSchema])
-async def get_student_work(db: Session = Depends(get_db)):
+async def get_student_work(db: Session = Depends(get_db),
+                           login: dict = Depends(get_current_admin)):
     query = db.query(StudentWorkModel).all()
     if query is None:
         raise HTTPException(
@@ -27,7 +28,8 @@ async def get_student_work(db: Session = Depends(get_db)):
 
 @router.get("/get-by-id/{work_id}", response_model=StudentWorkReadSchema)
 async def get_by_id(work_id: int,
-                    db: Session = Depends(get_db)):
+                    db: Session = Depends(get_db),
+                    login: dict = Depends(get_current_admin)):
     query = db.query(StudentWorkModel).filter(StudentWorkModel.id == work_id).first()
     if query is None:
         raise HTTPException(
@@ -39,7 +41,8 @@ async def get_by_id(work_id: int,
 
 @router.post("/create", response_model=StudentWorkReadSchema)
 async def create(schema: StudentWorkCreateSchema, course_id: int,
-                 db: Session = Depends(get_db)):
+                 db: Session = Depends(get_db),
+                 login: dict = Depends(get_current_admin)):
     # course_query
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
@@ -60,7 +63,8 @@ async def create(schema: StudentWorkCreateSchema, course_id: int,
 @router.put("/change-work/{work_id}", response_model=StudentWorkReadSchema)
 async def change_work(work_id: int,
                       schema: StudentWorkCreateSchema,
-                      db: Session = Depends(get_db)):
+                      db: Session = Depends(get_db),
+                      login: dict = Depends(get_current_admin)):
     query = db.query(StudentWorkModel).filter(StudentWorkModel.id == work_id).first()
     if query is None:
         raise HTTPException(
@@ -78,7 +82,8 @@ async def change_work(work_id: int,
 
 @router.delete("/delete-work/{work_id}")
 async def del_work(work_id: int,
-                     db: Session = Depends(get_db)):
+                     db: Session = Depends(get_db),
+                   login: dict = Depends(get_current_admin)):
     query = db.query(StudentWorkModel).filter(StudentWorkModel.id == work_id).first()
 
     if query is None:

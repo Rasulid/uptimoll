@@ -2,11 +2,11 @@ from typing import List
 
 from pydantic import BaseModel
 
-from course_schema import CourseReadSchema
-from for_who_schema import ForWhoSiteSchema
-from learning_format_schema import LearningFormatSiteSchema
-from schema.student_work_schema import StudentWorkSiteSchema
-from start_group_schema import StartGroupSiteSchema
+from api.schema.course_schema import CourseReadSchema
+from api.schema.for_who_schema import ForWhoSiteSchema
+from api.schema.learning_format_schema import LearningFormatSiteSchema
+from api.schema.student_work_schema import StudentWorkSiteSchema
+from api.schema.start_group_schema import StartGroupSiteSchema
 
 
 class SiteSchema(BaseModel):

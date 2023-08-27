@@ -15,7 +15,8 @@ router = APIRouter(tags=["group start"],
 
 
 @router.get("/get-list", response_model=List[StartGroupReadSchema])
-async def get_list_groups(db: Session = Depends(get_db)):
+async def get_list_groups(db: Session = Depends(get_db),
+                          login: dict = Depends(get_current_admin)):
     query = db.query(StartGroupModel).all()
     if query is None:
         raise HTTPException(
@@ -27,7 +28,8 @@ async def get_list_groups(db: Session = Depends(get_db)):
 
 @router.get("/get-by-id/{group_id}", response_model=StartGroupReadSchema)
 async def get_list_groups(group_id: int,
-                          db: Session = Depends(get_db)):
+                          db: Session = Depends(get_db),
+                          login: dict = Depends(get_current_admin)):
     query = db.query(StartGroupModel).filter(StartGroupModel.id == group_id).first()
     if query is None:
         raise HTTPException(
@@ -40,7 +42,8 @@ async def get_list_groups(group_id: int,
 @router.post("/create", response_model=StartGroupReadSchema)
 async def create(schema: StartGroupCreateSchema,
                  course_id: int,
-                 db: Session = Depends(get_db)):
+                 db: Session = Depends(get_db),
+                 login: dict = Depends(get_current_admin)):
     # course_query
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
@@ -67,7 +70,8 @@ async def create(schema: StartGroupCreateSchema,
 @router.put("/change-course/{course_id}", response_model=StartGroupReadSchema)
 async def change_start_group(course_id: int,
                              schema: StartGroupCreateSchema,
-                             db: Session = Depends(get_db)):
+                             db: Session = Depends(get_db),
+                             login: dict = Depends(get_current_admin)):
     query = db.query(StartGroupModel).filter(StartGroupModel.id == course_id).first()
     if query is None:
         raise HTTPException(
@@ -87,7 +91,8 @@ async def change_start_group(course_id: int,
 
 @router.delete("/delete-start-group/{group_id}")
 async def del_start_group(group_id: int,
-                     db: Session = Depends(get_db)):
+                     db: Session = Depends(get_db),
+                          login: dict = Depends(get_current_admin)):
     query = db.query(StartGroupModel).filter(StartGroupModel.id == group_id).first()
 
     if query is None:

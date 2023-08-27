@@ -1,13 +1,15 @@
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
-from auth.admin_auth import router as auth_router
-from router.admin_router import router as admin_router
-from router.course_router import router as course_router
-from router.for_who_router import router as for_who_router
-from router.learning_format_router import router as learning_format_router
-from router.start_group_router import router as start_group_router
-from router.student_work_router import router as student_work_router
+from api.auth.admin_auth import router as auth_router
+from api.router.admin_router import router as admin_router
+from api.router.course_router import router as course_router
+from api.router.for_who_router import router as for_who_router
+from api.router.learning_format_router import router as learning_format_router
+from api.router.start_group_router import router as start_group_router
+from api.router.student_work_router import router as student_work_router
+from api.super_user import router as super_user
 
 app = FastAPI(title="MIT",
               version="2.0")
@@ -26,3 +28,13 @@ app.mount('/static/image',
           StaticFiles(directory="static/image"), name="media")
 
 
+app.mount("/super-user", super_user)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # allow all HTTP methods
+    allow_headers=["*"],  # allow all headers
+)

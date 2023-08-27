@@ -9,8 +9,7 @@ from starlette.responses import JSONResponse
 
 from api.db.session import get_db
 from api.auth.login import get_current_admin, get_user_exceptions
-from api.model.course_model import (CourseModel, StudentWorkModel,
-                                    LearningFormatModel,ForWhoModel,StartGroupModel)
+from api.model.course_model import CourseModel
 from api.schema.course_schema import CourseCreateSchema, CourseReadSchema
 
 router = APIRouter(tags=["Course"],
@@ -25,7 +24,8 @@ async def upload_img(img: UploadFile = File(...)):
 
 
 @router.get('/get-list', response_model=List[CourseReadSchema])
-async def get_list(db: Session = Depends(get_db)):
+async def get_list(db: Session = Depends(get_db),
+                   login: dict = Depends(get_current_admin)):
     query = db.query(CourseModel).all()
     if query is None:
         raise HTTPException(
@@ -35,8 +35,9 @@ async def get_list(db: Session = Depends(get_db)):
     return query
 
 
-@router.get('/get-course/{course_id}', response_model=CourseReadSchema)
-async def get_course(course_id: int, db: Session = Depends(get_db)):
+@router.get('/get-course/{course_id}')
+async def get_course(course_id: int, db: Session = Depends(get_db),
+                     login: dict = Depends(get_current_admin)):
     course = (
         db.query(CourseModel)
         .filter(CourseModel.id == course_id)
@@ -57,9 +58,11 @@ async def get_course(course_id: int, db: Session = Depends(get_db)):
 
     return course
 
+
 @router.post('/create', response_model=CourseReadSchema)
 async def create(course_schema: CourseCreateSchema,
-                 db: Session = Depends(get_db)
+                 db: Session = Depends(get_db),
+                    login: dict = Depends(get_current_admin)
                  ):
     model = CourseModel()
     model.title = course_schema.title
@@ -80,7 +83,8 @@ async def create(course_schema: CourseCreateSchema,
 @router.post("/add-photo/{course_id}")
 async def add_photo(course_id: int,
                     file: UploadFile = File(...),
-                    db: Session = Depends(get_db)):
+                    db: Session = Depends(get_db),
+                    login: dict = Depends(get_current_admin)):
     model = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if model is None:
         raise HTTPException(status_code=404,
@@ -91,13 +95,14 @@ async def add_photo(course_id: int,
     db.add(model)
     db.commit()
 
-    return "Success"
+    return model
 
 
 @router.put("/change-course/{course_id}", response_model=CourseReadSchema)
 async def change_course(course_id: int,
                         schema: CourseCreateSchema,
-                        db: Session = Depends(get_db)):
+                        db: Session = Depends(get_db),
+                        login: dict = Depends(get_current_admin)):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
         raise HTTPException(
@@ -117,10 +122,12 @@ async def change_course(course_id: int,
     db.commit()
     return query
 
+
 @router.put("/change-photo/{course_id}")
 async def change_photo(course_id: int,
                        file: UploadFile = File(...),
-                       db: Session = Depends(get_db)):
+                       db: Session = Depends(get_db),
+                       login: dict = Depends(get_current_admin)):
     model = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if model is None:
         raise HTTPException(status_code=404,
@@ -131,12 +138,13 @@ async def change_photo(course_id: int,
     db.add(model)
     db.commit()
 
-    return "Success"
+    return model
 
 
 @router.delete("/delete-course/{course_id}")
 async def del_course(course_id: int,
-                     db: Session = Depends(get_db)):
+                     db: Session = Depends(get_db),
+                     login: dict = Depends(get_current_admin)):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
 
     if query is None:
@@ -149,9 +157,11 @@ async def del_course(course_id: int,
     return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
                         content="Successful")
 
+
 @router.delete("/del_img/{course_id}")
 async def del_img(course_id: int,
-                  db: Session = Depends(get_db)):
+                  db: Session = Depends(get_db),
+                  login: dict = Depends(get_current_admin)):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
         raise HTTPException(

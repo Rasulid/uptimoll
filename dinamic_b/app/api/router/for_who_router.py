@@ -15,7 +15,8 @@ router = APIRouter(tags=["For who"],
 
 
 @router.get('/get-list', response_model=List[ForWhoReadSchema])
-async def get_list(db: Session = Depends(get_db)):
+async def get_list(db: Session = Depends(get_db),
+                   login: dict = Depends(get_current_admin)):
     query = db.query(ForWhoModel).all()
     if query is None:
         raise HTTPException(
@@ -27,7 +28,8 @@ async def get_list(db: Session = Depends(get_db)):
 
 @router.get('/get-by-id/{for_who_id}', response_model=ForWhoReadSchema)
 async def get_by_id(for_who_id: int,
-                   db: Session = Depends(get_db)):
+                   db: Session = Depends(get_db),
+                    login: dict = Depends(get_current_admin)):
     query = db.query(ForWhoModel).filter(ForWhoModel.id == for_who_id).first()
     if query is None:
         raise HTTPException(
@@ -40,7 +42,8 @@ async def get_by_id(for_who_id: int,
 @router.post('/create', response_model=ForWhoReadSchema)
 async def create(schema: ForWhoCreateSchema,
                  course_id: int,
-                 db: Session = Depends(get_db)):
+                 db: Session = Depends(get_db),
+                 login: dict = Depends(get_current_admin)):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
         raise HTTPException(
@@ -62,7 +65,8 @@ async def create(schema: ForWhoCreateSchema,
 @router.put("/change-for-who/{id}", response_model=ForWhoReadSchema)
 async def change_for_who(for_who_id: int,
                          schema: ForWhoCreateSchema,
-                         db: Session = Depends(get_db)):
+                         db: Session = Depends(get_db),
+                         login: dict = Depends(get_current_admin)):
     query = db.query(ForWhoModel).filter(ForWhoModel.id == for_who_id).first()
     if query is None:
         raise HTTPException(
@@ -80,7 +84,8 @@ async def change_for_who(for_who_id: int,
 
 @router.delete("/delete-course/{group_id}", response_model=ForWhoReadSchema)
 async def del_for_who(for_who_id: int,
-                     db: Session = Depends(get_db)):
+                     db: Session = Depends(get_db),
+                      login: dict = Depends(get_current_admin)):
     query = db.query(ForWhoModel).filter(ForWhoModel.id == for_who_id).first()
     if query is None:
         raise HTTPException(
