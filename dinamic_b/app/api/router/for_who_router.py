@@ -28,7 +28,7 @@ async def get_list(db: Session = Depends(get_db),
 
 @router.get('/get-by-id/{for_who_id}', response_model=ForWhoReadSchema)
 async def get_by_id(for_who_id: int,
-                   db: Session = Depends(get_db),
+                    db: Session = Depends(get_db),
                     login: dict = Depends(get_current_admin)):
     query = db.query(ForWhoModel).filter(ForWhoModel.id == for_who_id).first()
     if query is None:
@@ -84,7 +84,7 @@ async def change_for_who(for_who_id: int,
 
 @router.delete("/delete-course/{group_id}", response_model=ForWhoReadSchema)
 async def del_for_who(for_who_id: int,
-                     db: Session = Depends(get_db),
+                      db: Session = Depends(get_db),
                       login: dict = Depends(get_current_admin)):
     query = db.query(ForWhoModel).filter(ForWhoModel.id == for_who_id).first()
     if query is None:

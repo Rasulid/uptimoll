@@ -1,12 +1,12 @@
 from passlib import exc
 from fastapi import Depends, HTTPException, status, APIRouter
 
-from api.model.admin_model import Base, AdminModel
-from api.core.config import SECRET_KEY
+from model.admin_model import Base, AdminModel
+from core.config import SECRET_KEY
 from typing import Optional
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from api.db.DataBase import engine, SessionLocal
+from db.DataBase import engine, SessionLocal
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime
 from jose import jwt, JWTError
