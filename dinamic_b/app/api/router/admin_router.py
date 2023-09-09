@@ -1,8 +1,10 @@
 from datetime import datetime
 from typing import List
 
+import jwt
 from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.responses import Response
+from jose import JWTError
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
@@ -11,6 +13,7 @@ from api.auth.admin_auth import password_hash
 from api.auth.login import get_current_admin, get_user_exceptions
 from api.schema.admin_schema import Admin_Schema, Admin_Read_Schema
 from api.model.admin_model import AdminModel
+from auth.admin_auth import SECRET_KEY
 
 router = APIRouter(prefix="/api/admin",
                    tags=['admin'])
@@ -126,3 +129,25 @@ async def delete_admin(id: int,
     delete = db.query(AdminModel).filter(AdminModel.id == id).delete()
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get("/me")
+async def me(token: str,
+             db: Session = Depends(get_db),
+                ):
+    print("Welcome")
+    try:
+
+        print(token)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("id")
+        print(user_id)
+        query = db.query(AdminModel).filter(AdminModel.id == user_id).first()
+
+        if query is None:
+            return HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                 detail="not found")
+
+        return query
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
