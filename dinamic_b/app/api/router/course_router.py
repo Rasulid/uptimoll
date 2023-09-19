@@ -10,7 +10,7 @@ from starlette.responses import JSONResponse
 from api.db.session import get_db
 from api.auth.login import get_current_admin, get_user_exceptions
 from api.model.course_model import CourseModel
-from api.schema.course_schema import CourseCreateSchema, CourseReadSchema
+from api.schema.course_schema import CourseCreateSchema, CourseReadSchema, Schema
 
 router = APIRouter(tags=["Course"],
                    prefix="/api/course")
@@ -60,7 +60,7 @@ async def get_course(course_id: int, db: Session = Depends(get_db),
 
 
 @router.post('/create', response_model=CourseReadSchema)
-async def create(course_schema: CourseCreateSchema,
+async def create(course_schema: Schema,
                  db: Session = Depends(get_db),
                     login: dict = Depends(get_current_admin)
                  ):
