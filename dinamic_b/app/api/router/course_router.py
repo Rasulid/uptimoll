@@ -65,6 +65,7 @@ async def create(course_schema: CourseCreateSchema,
                     login: dict = Depends(get_current_admin)
                  ):
     model = CourseModel()
+    print(course_schema.title)
     model.title = course_schema.title
     model.description = course_schema.description
     model.type = course_schema.type
