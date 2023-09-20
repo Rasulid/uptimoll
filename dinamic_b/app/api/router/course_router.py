@@ -74,6 +74,7 @@ async def create(course_schema: Schema,
     model.home_work = course_schema.home_work
     model.project_portfolio = course_schema.project_portfolio
     model.visible = course_schema.visible
+    model.sub_title = course_schema.sub_title
 
     db.add(model)
     db.commit()
@@ -118,6 +119,8 @@ async def change_course(course_id: int,
     query.home_work = schema.home_work
     query.project_portfolio = schema.project_portfolio
     query.visible = schema.visible
+    query.sub_title = schema.sub_title
+
 
     db.add(query)
     db.commit()

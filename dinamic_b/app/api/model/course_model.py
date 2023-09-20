@@ -14,6 +14,8 @@ class CourseModel(Base):
     home_work = Column(Integer)
     project_portfolio = Column(Integer)
     visible = Column(Boolean)
+    sub_title = Column(String)
+
 
     for_who_rel = relationship("ForWhoModel", back_populates="course")
     start_group_rel = relationship("StartGroupModel", back_populates="course")
@@ -26,7 +28,6 @@ class ForWhoModel(Base):
     # one-to-one relationship
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
-    sub_title = Column(String)
     description = Column(String)
     course_id = Column(Integer, ForeignKey('course.id', ondelete="CASCADE"))
 

@@ -52,7 +52,6 @@ async def create(schema: ForWhoCreateSchema,
         )
     model = ForWhoModel()
     model.title = schema.title
-    model.sub_title = schema.sub_title
     model.description = schema.description
     model.course_id = course_id
 
@@ -74,7 +73,6 @@ async def change_for_who(for_who_id: int,
             detail="Not found"
         )
     query.title = schema.title
-    query.sub_title = schema.sub_title
     query.description = schema.description
 
     db.add(query)

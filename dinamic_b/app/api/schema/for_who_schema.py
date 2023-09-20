@@ -3,7 +3,6 @@ from pydantic import BaseModel
 
 class ForWhoCreateSchema(BaseModel):
     title: str
-    sub_title: str
     description: str
 
 
@@ -20,7 +19,6 @@ class ForWhoReadSchema(BaseModel):
 
 class ForWhoSiteSchema(BaseModel):
     title: str
-    sub_title: str
     description: str
 
     class Config:

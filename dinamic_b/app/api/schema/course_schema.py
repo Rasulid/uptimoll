@@ -10,6 +10,8 @@ class Schema(BaseModel):
     practice: int
     home_work: int
     project_portfolio: int
+    sub_title: str
+
     visible: bool
 
 
@@ -23,6 +25,8 @@ class CourseReadSchema(BaseModel):
     home_work: int
     project_portfolio: int
     visible: bool
+    sub_title: str
+
 
     class Config:
         orm_mode = True
