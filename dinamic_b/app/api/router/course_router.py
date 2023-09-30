@@ -102,7 +102,7 @@ async def add_photo(course_id: int,
 
 @router.put("/change-course/{course_id}", response_model=CourseReadSchema)
 async def change_course(course_id: int,
-                        schema: CourseCreateSchema,
+                        schema: Schema,
                         db: Session = Depends(get_db),
                         login: dict = Depends(get_current_admin)):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
