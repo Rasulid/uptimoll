@@ -9,7 +9,7 @@ class ForWhoCreateSchema(BaseModel):
 class ForWhoReadSchema(BaseModel):
     id: int
     title: str
-    sub_title: str
+    # sub_title: str
     description: str
     course_id: int
 

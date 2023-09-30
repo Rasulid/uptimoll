@@ -62,11 +62,11 @@ async def create(schema: ForWhoCreateSchema,
 
 
 @router.put("/change-for-who/{id}", response_model=ForWhoReadSchema)
-async def change_for_who(for_who_id: int,
+async def change_for_who(id: int,
                          schema: ForWhoCreateSchema,
                          db: Session = Depends(get_db),
                          login: dict = Depends(get_current_admin)):
-    query = db.query(ForWhoModel).filter(ForWhoModel.id == for_who_id).first()
+    query = db.query(ForWhoModel).filter(ForWhoModel.id == id).first()
     if query is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -80,11 +80,11 @@ async def change_for_who(for_who_id: int,
     return query
 
 
-@router.delete("/delete-course/{group_id}", response_model=ForWhoReadSchema)
-async def del_for_who(for_who_id: int,
+@router.delete("/delete-course/{id}", response_model=ForWhoReadSchema)
+async def del_for_who(id: int,
                      db: Session = Depends(get_db),
                       login: dict = Depends(get_current_admin)):
-    query = db.query(ForWhoModel).filter(ForWhoModel.id == for_who_id).first()
+    query = db.query(ForWhoModel).filter(ForWhoModel.id == id).first()
     if query is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
