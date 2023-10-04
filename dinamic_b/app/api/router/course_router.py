@@ -24,7 +24,8 @@ async def upload_img(img: UploadFile = File(...)):
 
 @router.get('/get-list', response_model=List[CourseReadSchema])
 async def get_list(db: Session = Depends(get_db),
-                   login: dict = Depends(get_current_admin)):
+                   # login: dict = Depends(get_current_admin)
+                   ):
     query = db.query(CourseModel).all()
     if query is None:
         raise HTTPException(
