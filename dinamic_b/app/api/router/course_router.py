@@ -37,7 +37,8 @@ async def get_list(db: Session = Depends(get_db),
 
 @router.get('/get-course/{course_id}')
 async def get_course(course_id: int, db: Session = Depends(get_db),
-                     login: dict = Depends(get_current_admin)):
+                     # login: dict = Depends(get_current_admin)
+                     ):
     course = (
         db.query(CourseModel)
         .filter(CourseModel.id == course_id)
