@@ -42,7 +42,7 @@ async def get_by_id(work_id: int,
 @router.post("/create", response_model=StudentWorkReadSchema)
 async def create(schema: StudentWorkCreateSchema, course_id: int,
                  db: Session = Depends(get_db),
-                 # login: dict = Depends(get_current_admin)
+                 login: dict = Depends(get_current_admin)
                  ):
     # course_query
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()

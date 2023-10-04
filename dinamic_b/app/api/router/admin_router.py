@@ -18,7 +18,7 @@ router = APIRouter(prefix="/api/admin",
 @router.post("/registr", response_model=List[Admin_Read_Schema])
 async def register(admin: Admin_Schema,
                    db: Session = Depends(get_db),
-                   # login: dict = Depends(get_current_admin)
+                   login: dict = Depends(get_current_admin)
                    ):
     res = []
     admin.created_at = datetime.utcnow()

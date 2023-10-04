@@ -61,7 +61,7 @@ async def get_course(course_id: int, db: Session = Depends(get_db),
 @router.post('/create', response_model=CourseReadSchema)
 async def create(course_schema: Schema,
                  db: Session = Depends(get_db),
-                 # login: dict = Depends(get_current_admin)
+                 login: dict = Depends(get_current_admin)
                  ):
     course_schema.image_name = 'start'
     model = CourseModel(**course_schema.model_dump())
@@ -94,7 +94,7 @@ async def add_photo(course_id: int,
 async def change_course(course_id: int,
                         schema: Schema,
                         db: Session = Depends(get_db),
-                        # login: dict = Depends(get_current_admin)
+                        login: dict = Depends(get_current_admin)
                         ):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:

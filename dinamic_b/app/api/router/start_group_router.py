@@ -43,7 +43,7 @@ async def get_list_groups(group_id: int,
 async def create(schema: StartGroupCreateSchema,
                  course_id: int,
                  db: Session = Depends(get_db),
-                 # login: dict = Depends(get_current_admin)
+                 login: dict = Depends(get_current_admin)
                  ):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:

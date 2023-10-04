@@ -43,7 +43,7 @@ async def get_formats(format_id: int,
 async def create(schema: LearningFormatCreateSchema,
                  course_id: int,
                  db: Session = Depends(get_db),
-                 # login: dict = Depends(get_current_admin)
+                 login: dict = Depends(get_current_admin)
                  ):
     # course_query
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
