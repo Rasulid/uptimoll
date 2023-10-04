@@ -8,7 +8,7 @@ class Schema(BaseModel):
     title: str
     description: str
     type: str
-    image_name: Optional[str]
+    image_name: Optional[str] = None
     practice: int
     home_work: int
     project_portfolio: int

@@ -10,7 +10,7 @@ celery
 certifi
 cffi
 click
-click-didyoumean  
+click-didyoumean
 click-plugins
 click-repl
 cryptography
