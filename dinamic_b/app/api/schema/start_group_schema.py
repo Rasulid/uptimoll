@@ -10,6 +10,7 @@ class StartGroupCreateSchema(BaseModel):
     time_start: str
     time_end: str
     weeks: str
+    course_id: int
 
 
 class StartGroupReadSchema(BaseModel):

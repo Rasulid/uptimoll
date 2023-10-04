@@ -42,17 +42,16 @@ async def get_by_id(work_id: int,
 @router.post("/create", response_model=StudentWorkReadSchema)
 async def create(schema: StudentWorkCreateSchema, course_id: int,
                  db: Session = Depends(get_db),
-                 login: dict = Depends(get_current_admin)):
+                 # login: dict = Depends(get_current_admin)
+                 ):
     # course_query
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Course not found")
-    model = StudentWorkModel()
-    model.link = schema.link
-    model.image_name = schema.image_name
-    model.visible = schema.visible
-    model.course_id = course_id
+
+    schema.course_id = course_id
+    model = StudentWorkModel(**schema.model_dump())
 
     db.add(model)
     db.commit()

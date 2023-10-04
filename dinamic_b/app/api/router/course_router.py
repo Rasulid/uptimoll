@@ -3,14 +3,13 @@ import uuid
 from typing import List
 
 from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, File
-from fastapi.responses import Response
 from sqlalchemy.orm import Session, joinedload
 from starlette.responses import JSONResponse
 
 from api.db.session import get_db
-from api.auth.login import get_current_admin, get_user_exceptions
+from api.auth.login import get_current_admin
 from api.model.course_model import CourseModel
-from api.schema.course_schema import CourseCreateSchema, CourseReadSchema, Schema
+from api.schema.course_schema import CourseReadSchema, Schema
 
 router = APIRouter(tags=["Course"],
                    prefix="/api/course")
@@ -62,19 +61,10 @@ async def get_course(course_id: int, db: Session = Depends(get_db),
 @router.post('/create', response_model=CourseReadSchema)
 async def create(course_schema: Schema,
                  db: Session = Depends(get_db),
-                    login: dict = Depends(get_current_admin)
+                 # login: dict = Depends(get_current_admin)
                  ):
-    model = CourseModel()
-    print(course_schema.title)
-    model.title = course_schema.title
-    model.description = course_schema.description
-    model.type = course_schema.type
-    model.image_name = "string"
-    model.practice = course_schema.practice
-    model.home_work = course_schema.home_work
-    model.project_portfolio = course_schema.project_portfolio
-    model.visible = course_schema.visible
-    model.sub_title = course_schema.sub_title
+    course_schema.image_name = 'start'
+    model = CourseModel(**course_schema.model_dump())
 
     db.add(model)
     db.commit()
@@ -100,11 +90,12 @@ async def add_photo(course_id: int,
     return model
 
 
-@router.put("/change-course/{course_id}", response_model=CourseReadSchema)
+@router.patch("/change-course/{course_id}", response_model=CourseReadSchema)
 async def change_course(course_id: int,
                         schema: Schema,
                         db: Session = Depends(get_db),
-                        login: dict = Depends(get_current_admin)):
+                        # login: dict = Depends(get_current_admin)
+                        ):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
         raise HTTPException(
@@ -114,7 +105,7 @@ async def change_course(course_id: int,
     query.title = schema.title
     query.description = schema.description
     query.type = schema.type
-    query.image_name = "string"
+    query.image_name = query.image_name
     query.practice = schema.practice
     query.home_work = schema.home_work
     query.project_portfolio = schema.project_portfolio

@@ -10,7 +10,6 @@ from api.auth.admin_auth import password_hash
 from api.auth.login import get_current_admin, get_user_exceptions
 from api.schema.admin_schema import Admin_Schema, Admin_Read_Schema
 from api.model.admin_model import AdminModel
-from api.auth.admin_auth import SECRET_KEY
 
 router = APIRouter(prefix="/api/admin",
                    tags=['admin'])
@@ -19,23 +18,11 @@ router = APIRouter(prefix="/api/admin",
 @router.post("/registr", response_model=List[Admin_Read_Schema])
 async def register(admin: Admin_Schema,
                    db: Session = Depends(get_db),
-                   login: dict = Depends(get_current_admin)
+                   # login: dict = Depends(get_current_admin)
                    ):
     res = []
-
-    admin_model = AdminModel()
-    admin_model.name = admin.name
-    admin_model.born = admin.born
-    admin_model.created_at = datetime.utcnow()
-    admin_model.phone_number = admin.phone_number
-    admin_model.gmail = admin.gmail
-    admin_model.password = admin.password
-    admin_model.country = admin.country
-    admin_model.region = admin.region
-    admin_model.is_active = admin.is_active
-    admin_model.is_staff = admin.is_staff
-    admin_model.is_superuser = admin.is_superuser
-    admin_model.is_verified = admin.is_verified
+    admin.created_at = datetime.utcnow()
+    admin_model = AdminModel(**admin.model_dump())
 
     if admin_model:
         user_name = db.query(AdminModel).all()

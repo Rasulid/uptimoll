@@ -43,18 +43,17 @@ async def get_formats(format_id: int,
 async def create(schema: LearningFormatCreateSchema,
                  course_id: int,
                  db: Session = Depends(get_db),
-                 login: dict = Depends(get_current_admin)):
+                 # login: dict = Depends(get_current_admin)
+                 ):
     # course_query
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Course not found")
-    model = LearningFormatModel()
-    model.group = schema.group
-    model.desc = schema.desc
-    model.desc_2 = schema.desc_2
-    model.price = schema.price
-    model.course_id = course_id
+
+    schema.course_id = course_id
+    model = LearningFormatModel(**schema.model_dump())
+
 
     db.add(model)
     db.commit()

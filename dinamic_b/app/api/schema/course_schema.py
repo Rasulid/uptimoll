@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -7,11 +8,11 @@ class Schema(BaseModel):
     title: str
     description: str
     type: str
+    image_name: Optional[str]
     practice: int
     home_work: int
     project_portfolio: int
     sub_title: str
-
     visible: bool
 
 
@@ -25,7 +26,6 @@ class CourseReadSchema(BaseModel):
     home_work: int
     project_portfolio: int
     visible: bool
-    sub_title: str
 
 
     class Config:

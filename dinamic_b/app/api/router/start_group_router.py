@@ -43,8 +43,8 @@ async def get_list_groups(group_id: int,
 async def create(schema: StartGroupCreateSchema,
                  course_id: int,
                  db: Session = Depends(get_db),
-                 login: dict = Depends(get_current_admin)):
-    # course_query
+                 # login: dict = Depends(get_current_admin)
+                 ):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
         if query is None:
@@ -52,14 +52,9 @@ async def create(schema: StartGroupCreateSchema,
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Course not found"
             )
-    model = StartGroupModel()
-    model.when_start = schema.when_start
-    model.weeks = schema.weeks
-    model.group_lang = schema.group_lang
-    model.time_start = schema.time_start
-    model.time_end = schema.time_end
-    model.weeks = schema.weeks
-    model.course_id = course_id
+
+    schema.course_id = course_id
+    model = StartGroupModel(**schema.model_dump())
 
     db.add(model)
     db.commit()
@@ -91,7 +86,7 @@ async def change_start_group(course_id: int,
 
 @router.delete("/delete-start-group/{group_id}")
 async def del_start_group(group_id: int,
-                     db: Session = Depends(get_db),
+                          db: Session = Depends(get_db),
                           login: dict = Depends(get_current_admin)):
     query = db.query(StartGroupModel).filter(StartGroupModel.id == group_id).first()
 

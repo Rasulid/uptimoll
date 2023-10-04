@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class ForWhoCreateSchema(BaseModel):
     title: str
     description: str
+    course_id: int
 
 
 class ForWhoReadSchema(BaseModel):

@@ -6,6 +6,7 @@ class StudentWorkCreateSchema(BaseModel):
     link: str
     image_name: str
     visible: bool
+    course_id: int
 
 
 class StudentWorkReadSchema(BaseModel):
