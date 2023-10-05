@@ -1,8 +1,8 @@
-"""add all tables
+"""change the row
 
-Revision ID: 581e335ad1dd
+Revision ID: 904a76938c2c
 Revises: 
-Create Date: 2023-08-26 10:32:31.479121
+Create Date: 2023-10-05 14:11:27.364753
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '581e335ad1dd'
+revision: str = '904a76938c2c'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -46,6 +46,7 @@ def upgrade() -> None:
     sa.Column('home_work', sa.Integer(), nullable=True),
     sa.Column('project_portfolio', sa.Integer(), nullable=True),
     sa.Column('visible', sa.Boolean(), nullable=True),
+    sa.Column('sub_title', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_course_id'), 'course', ['id'], unique=False)
@@ -62,7 +63,6 @@ def upgrade() -> None:
     op.create_table('for_who',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=True),
-    sa.Column('sub_title', sa.String(), nullable=True),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('course_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['course_id'], ['course.id'], ondelete='CASCADE'),
@@ -74,7 +74,7 @@ def upgrade() -> None:
     sa.Column('group', sa.String(), nullable=True),
     sa.Column('desc', sa.String(), nullable=True),
     sa.Column('desc_2', sa.String(), nullable=True),
-    sa.Column('price', sa.Integer(), nullable=True),
+    sa.Column('price', sa.String(), nullable=True),
     sa.Column('course_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['course_id'], ['course.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')

@@ -55,7 +55,7 @@ class LearningFormatModel(Base):
     group = Column(String)
     desc = Column(String)
     desc_2 = Column(String)
-    price = Column(Integer)
+    price = Column(String)
     course_id = Column(Integer, ForeignKey("course.id", ondelete="CASCADE"))
 
     course = relationship("CourseModel", back_populates="learn_format_rel")

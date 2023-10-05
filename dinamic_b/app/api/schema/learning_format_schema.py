@@ -5,7 +5,7 @@ class LearningFormatCreateSchema(BaseModel):
     group: str
     desc: str
     desc_2: str
-    price: int
+    price: str
     course_id: int
 
 
@@ -14,7 +14,7 @@ class LearningFormatReadSchema(BaseModel):
     group: str
     desc: str
     desc_2: str
-    price: int
+    price: str
     course_id: int
 
     class Config:
@@ -25,7 +25,7 @@ class LearningFormatSiteSchema(BaseModel):
     group: str
     desc: str
     desc_2: str
-    price: int
+    price: str
 
     class Config:
         orm_mode = True
