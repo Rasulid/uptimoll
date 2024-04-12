@@ -1,7 +1,5 @@
 from typing import List
-
 from fastapi import APIRouter, Depends, status, HTTPException
-from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 

@@ -1,7 +1,4 @@
-import shutil
-import uuid
 from typing import List
-
 from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
 from starlette.responses import JSONResponse
@@ -10,16 +7,11 @@ from api.db.session import get_db
 from api.auth.login import get_current_admin
 from api.model.course_model import CourseModel
 from api.schema.course_schema import CourseReadSchema, Schema
+from utils.course_logic import update_course_image
+from utils.img_logic import upload_img, delete_old_image
 
 router = APIRouter(tags=["Course"],
                    prefix="/api/course")
-
-
-async def upload_img(img: UploadFile = File(...)):
-    img.filename = f"{uuid.uuid4()}.jpg"
-    with open(f"static/image/{img.filename}", "wb") as buffer:
-        shutil.copyfileobj(img.file, buffer)
-    return img.filename
 
 
 @router.get('/get-list', response_model=List[CourseReadSchema])
@@ -63,7 +55,7 @@ async def get_course(course_id: int, db: Session = Depends(get_db),
 @router.post('/create', response_model=CourseReadSchema)
 async def create(course_schema: Schema,
                  db: Session = Depends(get_db),
-                 login: dict = Depends(get_current_admin)
+                 # login: dict = Depends(get_current_admin)
                  ):
     course_schema.image_name = 'start'
     model = CourseModel(**course_schema.model_dump())
@@ -74,11 +66,12 @@ async def create(course_schema: Schema,
     return model
 
 
-@router.post("/add-photo/{course_id}")
+@router.post("/add-photo/{course_id}", response_model=CourseReadSchema)
 async def add_photo(course_id: int,
                     file: UploadFile = File(...),
                     db: Session = Depends(get_db),
-                    login: dict = Depends(get_current_admin)):
+                    # login: dict = Depends(get_current_admin)
+                    ):
     model = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if model is None:
         raise HTTPException(status_code=404,
@@ -92,11 +85,11 @@ async def add_photo(course_id: int,
     return model
 
 
-@router.patch("/change-course/{course_id}", response_model=CourseReadSchema)
+@router.put("/change-course/{course_id}", response_model=CourseReadSchema)
 async def change_course(course_id: int,
                         schema: Schema,
                         db: Session = Depends(get_db),
-                        login: dict = Depends(get_current_admin)
+                        # login: dict = Depends(get_current_admin)
                         ):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
@@ -114,34 +107,26 @@ async def change_course(course_id: int,
     query.visible = schema.visible
     query.sub_title = schema.sub_title
 
-
     db.add(query)
     db.commit()
     return query
 
 
-@router.put("/change-photo/{course_id}")
-async def change_photo(course_id: int,
+@router.put('/update-image/{cource_id}')
+async def update_image(course_id: int,
                        file: UploadFile = File(...),
-                       db: Session = Depends(get_db),
-                       login: dict = Depends(get_current_admin)):
-    model = db.query(CourseModel).filter(CourseModel.id == course_id).first()
-    if model is None:
-        raise HTTPException(status_code=404,
-                            detail="Course not found")
-    image = await upload_img(file)
-    model.image_name = image
+                       db: Session = Depends(get_db)):
+    print("________________")
+    course = await update_course_image(course_id, file, db)
 
-    db.add(model)
-    db.commit()
-
-    return model
+    return course
 
 
 @router.delete("/delete-course/{course_id}")
 async def del_course(course_id: int,
                      db: Session = Depends(get_db),
-                     login: dict = Depends(get_current_admin)):
+                     # login: dict = Depends(get_current_admin)
+                     ):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
 
     if query is None:
@@ -149,25 +134,10 @@ async def del_course(course_id: int,
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Course not found"
         )
+
+    await delete_old_image(query.image_name)
+
     db.delete(query)
     db.commit()
     return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
                         content="Successful")
-
-
-@router.delete("/del_img/{course_id}")
-async def del_img(course_id: int,
-                  db: Session = Depends(get_db),
-                  login: dict = Depends(get_current_admin)):
-    query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
-    if query is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Course not found"
-        )
-    query.image_name = "string"
-
-    db.add(query)
-    db.commit()
-    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT,
-                        content="Success")
