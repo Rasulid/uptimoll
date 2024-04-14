@@ -17,3 +17,4 @@ async def delete_old_image(image_name: str):
         old_image_path = os.path.join("static", "image", image_name)
         if os.path.exists(old_image_path):
             os.remove(old_image_path)
+

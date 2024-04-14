@@ -11,10 +11,7 @@ ModelType = Type['ModelType']
 async def update_course_image(course_id: int,
                               file: UploadFile,
                               db: Session) -> HTTPException | Any:
-    print("14_______")
     course = db.query(CourseModel).filter(CourseModel.id == course_id).first()
-
-    print("_____", course)
 
     if not course:
         raise HTTPException(

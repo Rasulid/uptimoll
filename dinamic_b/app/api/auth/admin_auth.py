@@ -24,9 +24,6 @@ router = APIRouter(
 )
 
 
-
-
-
 def password_hash(password):
     if password is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="password is None")
@@ -86,6 +83,7 @@ async def get_current_user(token: str = Depends(oauth2_bearer)):
 
     return {"sub": username, "user_id": user_id}
 
+
 @router.post("/token")
 async def login_for_access_token(
         form_data: OAuth2PasswordRequestForm = Depends(),
@@ -118,7 +116,6 @@ async def refresh_token(refresh_token: str):
     new_access_token = jwt.encode({"sub": user_id}, SECRET_KEY, algorithm=ALGORITHM)
 
     return {"access_token": new_access_token}
-
 
 
 # Exceptions

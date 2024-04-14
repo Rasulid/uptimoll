@@ -29,7 +29,7 @@ async def register(db: Session = Depends(get_db)):
     admin_model.is_superuser = True
     admin_model.is_verified = True
 
-    hash_password = password_hash('root')  # Make sure to implement this function correctly
+    hash_password = password_hash('root')
     admin_model.password = hash_password
 
     user_name = db.query(AdminModel).all()

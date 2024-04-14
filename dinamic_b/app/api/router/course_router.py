@@ -16,7 +16,7 @@ router = APIRouter(tags=["Course"],
 
 @router.get('/get-list', response_model=List[CourseReadSchema])
 async def get_list(db: Session = Depends(get_db),
-                   # login: dict = Depends(get_current_admin)
+                   login: dict = Depends(get_current_admin)
                    ):
     query = db.query(CourseModel).all()
     if query is None:
@@ -29,7 +29,6 @@ async def get_list(db: Session = Depends(get_db),
 
 @router.get('/get-course/{course_id}')
 async def get_course(course_id: int, db: Session = Depends(get_db),
-                     # login: dict = Depends(get_current_admin)
                      ):
     course = (
         db.query(CourseModel)
@@ -55,7 +54,7 @@ async def get_course(course_id: int, db: Session = Depends(get_db),
 @router.post('/create', response_model=CourseReadSchema)
 async def create(course_schema: Schema,
                  db: Session = Depends(get_db),
-                 # login: dict = Depends(get_current_admin)
+                 login: dict = Depends(get_current_admin)
                  ):
     course_schema.image_name = 'start'
     model = CourseModel(**course_schema.model_dump())
@@ -70,7 +69,7 @@ async def create(course_schema: Schema,
 async def add_photo(course_id: int,
                     file: UploadFile = File(...),
                     db: Session = Depends(get_db),
-                    # login: dict = Depends(get_current_admin)
+                    login: dict = Depends(get_current_admin)
                     ):
     model = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if model is None:
@@ -89,7 +88,7 @@ async def add_photo(course_id: int,
 async def change_course(course_id: int,
                         schema: Schema,
                         db: Session = Depends(get_db),
-                        # login: dict = Depends(get_current_admin)
+                        login: dict = Depends(get_current_admin)
                         ):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
     if query is None:
@@ -115,8 +114,9 @@ async def change_course(course_id: int,
 @router.put('/update-image/{cource_id}')
 async def update_image(course_id: int,
                        file: UploadFile = File(...),
-                       db: Session = Depends(get_db)):
-    print("________________")
+                       db: Session = Depends(get_db),
+                       login: dict = Depends(get_current_admin)
+                       ):
     course = await update_course_image(course_id, file, db)
 
     return course
@@ -125,7 +125,7 @@ async def update_image(course_id: int,
 @router.delete("/delete-course/{course_id}")
 async def del_course(course_id: int,
                      db: Session = Depends(get_db),
-                     # login: dict = Depends(get_current_admin)
+                     login: dict = Depends(get_current_admin)
                      ):
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
 
