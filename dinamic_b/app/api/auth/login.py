@@ -1,5 +1,5 @@
 from fastapi import Depends, HTTPException, status
-from api.core.config import SECRET_KEY, AlGORITHM
+from api.core.config import settings
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from jose.exceptions import ExpiredSignatureError
@@ -7,8 +7,8 @@ from api.model.admin_model import AdminModel
 from api.auth.admin_auth import oauth2_bearer, get_user_exceptions
 from api.db.session import get_db
 
-SECRET_KEY = SECRET_KEY
-ALGORITHM = AlGORITHM
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.AlGORITHM
 
 
 async def get_current_admin(token: str = Depends(oauth2_bearer),

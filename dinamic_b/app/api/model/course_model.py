@@ -1,11 +1,11 @@
 from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import relationship
-from api.db.DataBase import Base
+from .base_model import BaseModel
 
 
-class CourseModel(Base):
+class CourseModel(BaseModel):
     __tablename__ = 'course'
-    __table_args__ = {'extend_existing': True}
+
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
     description = Column(String)
@@ -23,22 +23,21 @@ class CourseModel(Base):
     student_work_rel = relationship("StudentWorkModel", back_populates="course")
 
 
-class ForWhoModel(Base):
+class ForWhoModel(BaseModel):
     __tablename__ = 'for_who'
-    __table_args__ = {'extend_existing': True}
+
     # one-to-one relationship
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
     description = Column(String)
     course_id = Column(Integer, ForeignKey('course.id', ondelete="SET NULL"))
 
-    course_rel_to_fw = relationship("CourseModel", back_populates="for_who")
+    course = relationship("CourseModel", back_populates="for_who_rel")
 
 
-class StartGroupModel(Base):
+class StartGroupModel(BaseModel):
     # many-to-one relationship
     __tablename__ = 'start_group'
-    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     when_start = Column(String, nullable=False)
@@ -51,10 +50,9 @@ class StartGroupModel(Base):
     course = relationship("CourseModel", back_populates="start_group_rel")
 
 
-class LearningFormatModel(Base):
+class LearningFormatModel(BaseModel):
     # many-to-one relationship
     __tablename__ = 'learn_format'
-    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     group = Column(String)
@@ -66,10 +64,9 @@ class LearningFormatModel(Base):
     course = relationship("CourseModel", back_populates="learn_format_rel")
 
 
-class StudentWorkModel(Base):
+class StudentWorkModel(BaseModel):
     # many-to-one relationship
     __tablename__ = 'student_work'
-    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     link = Column(String)

@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from sqlalchemy import Integer, String, Boolean, Column, DateTime, func
-from api.db.DataBase import Base
+from .base_model import BaseModel
 
-class AdminModel(Base):
+
+class AdminModel(BaseModel):
     __tablename__ = 'admins'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
@@ -18,4 +17,3 @@ class AdminModel(Base):
     is_staff = Column(Boolean, default=False)
     is_superuser = Column(Boolean, default=False)
     is_verified = Column(Boolean, default=False)
-

@@ -1,16 +1,17 @@
 from fastapi import Depends, HTTPException, status, APIRouter
 from api.model.admin_model import AdminModel
-from api.core.config import SECRET_KEY, AlGORITHM
+from api.core.config import settings
 from typing import Optional
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from api.db.DataBase import engine, SessionLocal
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime
-from jose import jwt, JWTError
+from jose import jwt
 
-SECRET_KEY = SECRET_KEY
-ALGORITHM = AlGORITHM
+from db.session import get_db
+
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.AlGORITHM
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token/")
 
@@ -23,13 +24,7 @@ router = APIRouter(
 )
 
 
-def get_db():
-    global db
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
+
 
 
 def password_hash(password):

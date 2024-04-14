@@ -15,7 +15,8 @@ router = APIRouter(tags=["For who"],
 
 @router.get('/get-list', response_model=List[ForWhoReadSchema])
 async def get_list(db: Session = Depends(get_db),
-                   login: dict = Depends(get_current_admin)):
+                   # login: dict = Depends(get_current_admin)
+                   ):
     query = db.query(ForWhoModel).all()
     if query is None:
         raise HTTPException(

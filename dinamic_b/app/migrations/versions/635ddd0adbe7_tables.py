@@ -1,8 +1,8 @@
-"""change the row
+"""tables
 
-Revision ID: 904a76938c2c
-Revises: 
-Create Date: 2023-10-05 14:11:27.364753
+Revision ID: 635ddd0adbe7
+Revises: 5fc98a551925
+Create Date: 2024-04-14 16:18:36.467012
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '904a76938c2c'
-down_revision: Union[str, None] = None
+revision: str = '635ddd0adbe7'
+down_revision: Union[str, None] = '5fc98a551925'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -34,6 +34,7 @@ def upgrade() -> None:
     sa.Column('is_staff', sa.Boolean(), nullable=True),
     sa.Column('is_superuser', sa.Boolean(), nullable=True),
     sa.Column('is_verified', sa.Boolean(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('course',
@@ -47,6 +48,8 @@ def upgrade() -> None:
     sa.Column('project_portfolio', sa.Integer(), nullable=True),
     sa.Column('visible', sa.Boolean(), nullable=True),
     sa.Column('sub_title', sa.String(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_course_id'), 'course', ['id'], unique=False)
@@ -57,15 +60,29 @@ def upgrade() -> None:
     sa.Column('number', sa.String(), nullable=True),
     sa.Column('processed', sa.Boolean(), nullable=True),
     sa.Column('student', sa.Boolean(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_request_id'), 'request', ['id'], unique=False)
+    op.create_table('teacher',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('image', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_teacher_id'), 'teacher', ['id'], unique=False)
     op.create_table('for_who',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=True),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('course_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ondelete='CASCADE'),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_for_who_id'), 'for_who', ['id'], unique=False)
@@ -76,7 +93,9 @@ def upgrade() -> None:
     sa.Column('desc_2', sa.String(), nullable=True),
     sa.Column('price', sa.String(), nullable=True),
     sa.Column('course_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ondelete='CASCADE'),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_learn_format_id'), 'learn_format', ['id'], unique=False)
@@ -88,7 +107,9 @@ def upgrade() -> None:
     sa.Column('time_end', sa.String(), nullable=True),
     sa.Column('weeks', sa.String(), nullable=True),
     sa.Column('course_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ondelete='CASCADE'),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_start_group_id'), 'start_group', ['id'], unique=False)
@@ -98,7 +119,9 @@ def upgrade() -> None:
     sa.Column('image_name', sa.String(), nullable=True),
     sa.Column('visible', sa.Boolean(), nullable=True),
     sa.Column('course_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ondelete='CASCADE'),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_student_work_id'), 'student_work', ['id'], unique=False)
@@ -115,6 +138,8 @@ def downgrade() -> None:
     op.drop_table('learn_format')
     op.drop_index(op.f('ix_for_who_id'), table_name='for_who')
     op.drop_table('for_who')
+    op.drop_index(op.f('ix_teacher_id'), table_name='teacher')
+    op.drop_table('teacher')
     op.drop_index(op.f('ix_request_id'), table_name='request')
     op.drop_table('request')
     op.drop_index(op.f('ix_course_id'), table_name='course')
