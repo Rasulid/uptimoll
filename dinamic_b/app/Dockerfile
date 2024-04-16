@@ -9,7 +9,7 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 #ENV PYTHONPATH "${PYTHONPATH}:/app/"
-ENV PYTHONPATH "${PYTHONPATH}:/app/api"
+ENV PYTHONPATH "${PYTHONPATH}:/api"
 
 RUN mkdir -p /api/static/image
 
