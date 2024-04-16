@@ -8,10 +8,10 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-ENV PYTHONPATH "${PYTHONPATH}:/app/"
+#ENV PYTHONPATH "${PYTHONPATH}:/app/"
 ENV PYTHONPATH "${PYTHONPATH}:/app/api"
 
-RUN mkdir -p /app/api/static/image
+RUN mkdir -p /api/static/image
 
 COPY ./static/image /api/static/image
 
