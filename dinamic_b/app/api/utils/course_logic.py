@@ -2,8 +2,8 @@ from fastapi import UploadFile, File, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Type, Any
 
-from model.course_model import CourseModel
-from utils.img_logic import delete_old_image, upload_img
+from api.model.course_model import CourseModel
+from .img_logic import delete_old_image, upload_img
 
 ModelType = Type['ModelType']
 

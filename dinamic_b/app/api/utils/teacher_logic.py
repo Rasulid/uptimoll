@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from model.teacher_model import TeacherModel
-from schema.teacher_schema import TeacherCreateSchema
+from api.model.teacher_model import TeacherModel
+from api.schema.teacher_schema import TeacherCreateSchema
 
 
 def create_teacher_in_db(teacher_data: TeacherCreateSchema, db: Session) -> TeacherModel:

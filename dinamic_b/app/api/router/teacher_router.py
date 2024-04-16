@@ -7,9 +7,9 @@ from fastapi.responses import JSONResponse
 from api.model.teacher_model import TeacherModel
 from api.db.session import get_db
 from api.schema.teacher_schema import TeacherCreateSchema, TeacherReadSchema
-from auth.login import get_current_admin
-from utils.teacher_logic import create_teacher_in_db, get_teacher_from_db, update_teacher_in_db
-from utils.img_logic import upload_img, delete_old_image
+from api.auth.login import get_current_admin
+from api.utils.teacher_logic import create_teacher_in_db, get_teacher_from_db, update_teacher_in_db
+from api.utils.img_logic import upload_img, delete_old_image
 
 router = APIRouter(
     tags=['teacher'],
@@ -19,7 +19,7 @@ router = APIRouter(
 
 @router.get('/get-list', response_model=List[TeacherReadSchema])
 async def get_teacher_list(db: Session = Depends(get_db),
-                           login: dict = Depends(get_current_admin)
+                           # login: dict = Depends(get_current_admin)
                            ):
     query = db.query(TeacherModel).all()
     if query is None:

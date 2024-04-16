@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime
 from jose import jwt
 
-from db.session import get_db
+from api.db.session import get_db
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.AlGORITHM

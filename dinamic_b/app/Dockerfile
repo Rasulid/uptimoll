@@ -18,6 +18,10 @@ COPY ./static/image /app/api/static/image
 RUN #chmod a+x api/app.sh
 
 
+WORKDIR /app
+
+CMD alembic upgrade head
+
 WORKDIR /app/api
 
-CMD alembic upgrade head && uvicorn main:app --host "0.0.0.0" --port 8000 --workers 4 --reload
+CMD uvicorn main:app --host "0.0.0.0" --port 8000 --workers 4 --reload
