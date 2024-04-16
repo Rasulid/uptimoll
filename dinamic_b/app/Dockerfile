@@ -13,6 +13,6 @@ ENV PYTHONPATH "${PYTHONPATH}:/app/api"
 
 RUN mkdir -p /app/api/static/image
 
-COPY ./static/image /app/api/static/image
+COPY ./static/image /api/static/image
 
 CMD alembic upgrade head && uvicorn main:app --host "0.0.0.0" --port 8000 --workers 4 --reload
