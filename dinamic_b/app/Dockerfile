@@ -10,13 +10,8 @@ RUN pip install --upgrade pip && \
 
 ENV PYTHONPATH "/app/:/app/api/:${PYTHONPATH}"
 
-
-
 COPY ./static/image /app/api/static/image
 
+WORKDIR /app
 
-
-
-WORKDIR /app/api
-
-CMD alembic upgrade head && uvicorn main:app --host "0.0.0.0" --port 8000 --workers 4 --reload
+CMD alembic upgrade head && python3 main.py
