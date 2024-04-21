@@ -13,7 +13,7 @@ from api.db.session import get_db
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.AlGORITHM
 
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token/")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
