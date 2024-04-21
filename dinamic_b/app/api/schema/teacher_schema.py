@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class TeacherCreateSchema(BaseModel):
     name: str
     image: str
+    course: str
     description: str
 
     class Config:
@@ -13,6 +14,7 @@ class TeacherCreateSchema(BaseModel):
 class TeacherReadSchema(BaseModel):
     id: int
     name: str
+    course: str
     image: str
     description: str
 

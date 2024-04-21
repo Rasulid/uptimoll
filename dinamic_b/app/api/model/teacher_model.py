@@ -7,6 +7,7 @@ class TeacherModel(BaseModel):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
+    course = Column(String, nullable=False)
     image = Column(String, nullable=False)
     description = Column(String, nullable=False)
 

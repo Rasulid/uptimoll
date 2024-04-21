@@ -32,6 +32,7 @@ def update_teacher_in_db(teacher_id: int, teacher_data: TeacherCreateSchema, db:
         )
     teacher.name = teacher_data.name
     teacher.description = teacher_data.description
+    teacher.course = teacher_data.course
     teacher.image = teacher_data.image
 
     db.commit()
