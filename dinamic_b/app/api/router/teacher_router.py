@@ -13,7 +13,7 @@ from api.utils.img_logic import upload_img, delete_old_image
 
 router = APIRouter(
     tags=['teacher'],
-    prefix='/api/home/teacher'
+    prefix='/api/teacher'
 )
 
 
