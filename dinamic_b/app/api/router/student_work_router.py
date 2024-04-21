@@ -96,7 +96,7 @@ async def change_work(work_id: int,
     return query
 
 
-@router.put('update-image/{work_id}', response_model=StudentWorkReadSchema)
+@router.put('/update-image/{work_id}', response_model=StudentWorkReadSchema)
 async def update_image(work_id: int,
                        file: UploadFile = File(...),
                        db: Session = Depends(get_db),
