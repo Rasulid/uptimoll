@@ -58,7 +58,7 @@ async def create(schema: StudentWorkCreateSchema, course_id: int,
     return model
 
 
-@router.post('add-photo/{student_work_id}', response_model=StudentWorkReadSchema)
+@router.post('/add-photo/{student_work_id}', response_model=StudentWorkReadSchema)
 async def add_photo(student_work_id: int,
                     file: UploadFile = File(...),
                     db: Session = Depends(get_db),
