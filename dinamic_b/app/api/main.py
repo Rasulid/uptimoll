@@ -33,8 +33,9 @@ app.mount("/super-user", super_user)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # allow all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # allow all HTTP methods
-    allow_headers=["*"],  # allow all headers
+    allow_origins=["*"],  # Allows all domains
+    allow_credentials=False,  # Must be False if origins are set to "*"
+    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Specifying allowed methods
+    allow_headers=["Authorization", "Content-Type"],  # Specifying allowed headers
 )
+

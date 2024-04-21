@@ -53,7 +53,7 @@ def create_access_token(
     if express_delta:
         expire = datetime.utcnow() + express_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=20)
+        expire = datetime.utcnow() + timedelta(hours=20)
     encode.update({"exp": expire})
     return jwt.encode(encode, SECRET_KEY, ALGORITHM)
 

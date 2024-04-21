@@ -15,7 +15,7 @@ router = APIRouter(prefix="/api/admin",
                    tags=['admin'])
 
 
-@router.post("/registr", response_model=List[Admin_Read_Schema])
+@router.post("/register", response_model=List[Admin_Read_Schema])
 async def register(admin: Admin_Schema,
                    db: Session = Depends(get_db),
                    login: dict = Depends(get_current_admin)

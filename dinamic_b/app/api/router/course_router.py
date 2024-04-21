@@ -16,7 +16,7 @@ router = APIRouter(tags=["Course"],
 
 @router.get('/get-list', response_model=List[CourseReadSchema])
 async def get_list(db: Session = Depends(get_db),
-                   login: dict = Depends(get_current_admin)
+                   # login: dict = Depends(get_current_admin)
                    ):
     query = db.query(CourseModel).all()
     if query is None:
@@ -28,7 +28,8 @@ async def get_list(db: Session = Depends(get_db),
 
 
 @router.get('/get-course/{course_id}')
-async def get_course(course_id: int, db: Session = Depends(get_db),
+async def get_course(course_id: int,
+                     db: Session = Depends(get_db)
                      ):
     course = (
         db.query(CourseModel)
