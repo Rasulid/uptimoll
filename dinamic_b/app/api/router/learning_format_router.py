@@ -72,9 +72,16 @@ async def change_format(format_id: int,
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Format not found"
         )
+
     query.group = schema.group
+    query.group_ru = schema.group_ru
+
     query.desc = schema.desc
+    query.desc_ru = schema.desc_ru
+
     query.desc_2 = schema.desc_2
+    query.desc_2_ru = schema.desc_2_ru
+
     query.price = schema.price
 
     db.add(query)

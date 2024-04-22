@@ -3,24 +3,17 @@ from pydantic import BaseModel
 
 class ForWhoCreateSchema(BaseModel):
     title: str
+    title_ru: str
+
     description: str
+    description_ru: str
+
     course_id: int
 
 
-class ForWhoReadSchema(BaseModel):
+class ForWhoReadSchema(ForWhoCreateSchema):
     id: int
-    title: str
-    # sub_title: str
-    description: str
-    course_id: int
 
     class Config:
         orm_mode = True
 
-
-class ForWhoSiteSchema(BaseModel):
-    title: str
-    description: str
-
-    class Config:
-        orm_mode = True

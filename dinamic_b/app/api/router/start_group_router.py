@@ -74,10 +74,20 @@ async def change_start_group(course_id: int,
             detail="Course not found"
         )
     query.when_start = schema.when_start
+    query.when_start_ru = schema.when_start_ru
+
     query.group_lang = schema.group_lang
+    query.group_lang_ru = schema.group_lang_ru
+
     query.time_start = schema.time_start
+    query.time_start_ru = schema.time_start_ru
+
     query.time_end = schema.time_end
+    query.time_end_ru = schema.time_end_ru
+
     query.weeks = schema.weeks
+    query.weeks_ru = schema.weeks_ru
+
 
     db.add(query)
     db.commit()

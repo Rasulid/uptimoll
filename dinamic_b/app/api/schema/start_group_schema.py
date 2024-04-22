@@ -6,32 +6,27 @@ from pydantic import BaseModel
 
 class StartGroupCreateSchema(BaseModel):
     when_start: str
+    when_start_ru: str
+
     group_lang: str
+    group_lang_ru: str
+
     time_start: str
+    time_start_ru: str
+
     time_end: str
+    time_end_ru: str
+
     weeks: str
+    weeks_ru: str
+
     course_id: int
 
 
-class StartGroupReadSchema(BaseModel):
+class StartGroupReadSchema(StartGroupCreateSchema):
     id: int
-    when_start: str
-    group_lang: str
-    time_start: str
-    time_end: str
-    weeks: str
-    course_id: int
 
     class Config:
         orm_mode = True
 
 
-class StartGroupSiteSchema(BaseModel):
-    when_start: str
-    group_lang: str
-    time_start: str
-    time_end: str
-    weeks: str
-
-    class Config:
-        orm_mode = True

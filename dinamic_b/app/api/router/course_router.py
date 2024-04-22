@@ -98,14 +98,22 @@ async def change_course(course_id: int,
             detail="Course not found"
         )
     query.title = schema.title
+    query.title_ru = schema.title_ru
+
     query.description = schema.description
+    query.description_ru = schema.description_ru
+
     query.type = schema.type
+    query.type_ru = schema.type_ru
+
     query.image_name = query.image_name
     query.practice = schema.practice
     query.home_work = schema.home_work
     query.project_portfolio = schema.project_portfolio
     query.visible = schema.visible
+
     query.sub_title = schema.sub_title
+    query.sub_title_ru = schema.sub_title_ru
 
     db.add(query)
     db.commit()

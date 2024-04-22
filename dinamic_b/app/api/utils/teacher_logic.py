@@ -31,8 +31,14 @@ def update_teacher_in_db(teacher_id: int, teacher_data: TeacherCreateSchema, db:
             detail="Teacher not found"
         )
     teacher.name = teacher_data.name
+    teacher.name_ru = teacher_data.name_ru
+
     teacher.description = teacher_data.description
+    teacher.description_ru = teacher_data.description_ru
+
     teacher.course = teacher_data.course
+    teacher.course_ru = teacher_data.course_ru
+
     teacher.image = teacher_data.image
 
     db.commit()

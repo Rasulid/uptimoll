@@ -74,7 +74,10 @@ async def change_for_who(id: int,
             detail="Not found"
         )
     query.title = schema.title
+    query.title_ru = schema.title_ru
+
     query.description = schema.description
+    query.description_ru = schema.description_ru
 
     db.add(query)
     db.commit()

@@ -41,7 +41,7 @@ async def get_by_id(work_id: int,
 @router.post("/create", response_model=StudentWorkReadSchema)
 async def create(schema: StudentWorkCreateSchema, course_id: int,
                  db: Session = Depends(get_db),
-                 # login: dict = Depends(get_current_admin)
+                 login: dict = Depends(get_current_admin)
                  ):
     # course_query
     query = db.query(CourseModel).filter(CourseModel.id == course_id).first()
@@ -62,7 +62,7 @@ async def create(schema: StudentWorkCreateSchema, course_id: int,
 async def add_photo(student_work_id: int,
                     file: UploadFile = File(...),
                     db: Session = Depends(get_db),
-                    # login: dict = Depends(get_current_admin)
+                    login: dict = Depends(get_current_admin)
                     ):
     query = db.query(StudentWorkModel).filter(StudentWorkModel.id == student_work_id).first()
 

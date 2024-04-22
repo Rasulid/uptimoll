@@ -3,29 +3,23 @@ from pydantic import BaseModel
 
 class LearningFormatCreateSchema(BaseModel):
     group: str
+    group_ru: str
+
     desc: str
+    desc_ru: str
+
     desc_2: str
+    desc_2_ru: str
+
     price: str
+
     course_id: int
 
 
-class LearningFormatReadSchema(BaseModel):
+class LearningFormatReadSchema(LearningFormatCreateSchema):
     id: int
-    group: str
-    desc: str
-    desc_2: str
-    price: str
-    course_id: int
 
     class Config:
         orm_mode = True
 
 
-class LearningFormatSiteSchema(BaseModel):
-    group: str
-    desc: str
-    desc_2: str
-    price: str
-
-    class Config:
-        orm_mode = True
