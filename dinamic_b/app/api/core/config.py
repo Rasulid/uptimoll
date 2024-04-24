@@ -19,6 +19,12 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     AlGORITHM: str
 
+    CLIENT_ID: str
+    CLIENT_SECRET: str
+    SUBDAMAIN: str
+    REDIRECT_URL: str
+    TOKEN_CODE: str
+
     DATABASE_URI: str | None = None
 
     @field_validator("DATABASE_URI", check_fields=False)

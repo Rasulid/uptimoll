@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Depends
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
@@ -13,6 +12,8 @@ from api.router.student_work_router import router as student_work_router
 from api.super_user import router as super_user
 from api.router.teacher_router import router as teacher_router
 
+from api.CRM.amo import router as amo_router
+
 
 app = FastAPI(title="MIT",
               version="2.0")
@@ -25,6 +26,8 @@ app.include_router(learning_format_router)
 app.include_router(student_work_router)
 app.include_router(for_who_router)
 app.include_router(teacher_router)
+
+app.include_router(amo_router)
 
 app.mount('/static/image',
           StaticFiles(directory="static/image"), name="media")
