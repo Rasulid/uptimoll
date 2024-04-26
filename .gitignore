@@ -1,5 +1,4 @@
 venv
 __pycache__
 .idea
-.env
-.env-non-dev
+dinamic_b/app/api/.env

@@ -20,7 +20,7 @@ services:
     depends_on:
       - db
     volumes:
-      - static_data:/app/api/static/image
+      - static_data:/app/static/image
 
 volumes:
   db_data:
